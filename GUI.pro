@@ -8,9 +8,7 @@ TEMPLATE = app
 
 SOURCES += \
     source/main.cpp \
-    source/MainWindow.cpp \
-    source/MenuBar.cpp
+    source/MainWindow.cpp
 
 HEADERS += \
-    header/MainWindow.h \
-    header/MenuBar.h
+    header/MainWindow.h

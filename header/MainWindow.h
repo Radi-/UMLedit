@@ -3,11 +3,12 @@
 
 #include <QMainWindow>
 #include <QMenu>
+#include <QMenuBar>
 #include <QAction>
 #include <QTabWidget>
 #include <QPushButton>
-
-#include "header/MenuBar.h"
+#include <QDockWidget>
+#include <QTreeWidget>
 
 class MainWindow : public QMainWindow
 {
@@ -20,7 +21,7 @@ private slots:
 
 private:
 
-    MenuBar* menuBar;
+    QMenuBar* menuBar;
     QMenu* fileMenu;
     QMenu* editMenu;
     QMenu* burgerMenu;
@@ -31,7 +32,12 @@ private:
     QTabWidget* tabWidget;
     QPushButton* menuButton;
 
+    QDockWidget* objectWindow;
+    QDockWidget* connectorWindow;
+    QDockWidget* propertyWindow;
+    QDockWidget* historyWindow;
 
+    QTreeWidget* objectList;
 
 
 public:

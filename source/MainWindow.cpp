@@ -1,5 +1,6 @@
 
 #include <QBoxLayout>
+#include <QDebug>
 
 #include "header/MainWindow.h"
 
@@ -11,14 +12,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     this->setWindowTitle("UMLedit");
 
-    QWidget* window = new QWidget(this);
-    QVBoxLayout* layout = new QVBoxLayout(window);
-    menuBar = new MenuBar(window);
     //instantiate elements and set properties:
 
-    //menuBar/fileMenu
+    //menuBar
+    menuBar = new QMenuBar(this);
     fileMenu = new QMenu(menuBar);
     fileMenu->setTitle(tr("File"));
+    editMenu = new QMenu(menuBar);
+    editMenu->setTitle(tr("Edit"));
+
+    //menuBar/fileMenu
     newAction = new QAction(fileMenu);
     newAction->setText(tr("New"));
     connect(newAction, SIGNAL(triggered()), this, SLOT(newActionSlot()));
@@ -29,17 +32,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
     //menuBar/editMenu
-    editMenu = new QMenu(menuBar);
-    editMenu->setTitle(tr("Edit"));
+
 
     //drawer menu mode:
     tabWidget = new QTabWidget(this);
+    tabWidget->setTabBarAutoHide(false);
+    tabWidget->setTabsClosable(true);
 
     QWidget* randWidget = new QWidget();
     menuButton = new QPushButton(tabWidget);
     menuButton->setText(tr("Menu"));
+    tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
     tabWidget->addTab(randWidget, tr("Tab1"));
+    int height = tabWidget->cornerWidget(Qt::TopLeftCorner)->height();
+    tabWidget->cornerWidget(Qt::TopLeftCorner)->setMinimumHeight(height);
+    tabWidget->setMinimumHeight(height);
+    tabWidget->tabBar()->setMinimumHeight(height);
+    tabWidget->removeTab(0);
+    tabWidget->setVisible(true);
+    menuButton->setVisible(true);
+    tabWidget->tabBar()->setVisible(true);
 
+
+    //dockable windows:
+    objectWindow = new QDockWidget(this);
+    connectorWindow = new QDockWidget(this);
+    propertyWindow = new QDockWidget(this);
+    historyWindow = new QDockWidget(this);
+
+    objectList = new QTreeWidget(objectWindow);
+    objectWindow->setWidget(objectList);
     //assign elements:
 
     //menuBar/fileMenu
@@ -58,11 +80,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     menuButton->setMenu(burgerMenu);
 
     //drawer menu mode:
-    layout->setMenuBar(menuBar);
-    layout->addWidget(tabWidget);
-    window->setLayout(layout);
-    setCentralWidget(window);
-    tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
+    setMenuBar(menuBar);
+    setCentralWidget(tabWidget);
+
 
 
     this->showMaximized();
