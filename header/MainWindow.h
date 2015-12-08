@@ -23,6 +23,7 @@ private:
     MenuBar* menuBar;
     QMenu* fileMenu;
     QMenu* editMenu;
+    QMenu* burgerMenu;
     QAction* newAction;
     QAction* openAction;
     QAction* exitAction;
