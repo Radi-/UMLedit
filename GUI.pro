@@ -9,7 +9,13 @@ TEMPLATE = app
 
 SOURCES += \
     source/main.cpp \
-    source/MainWindow.cpp
+    source/MainWindow.cpp \
+    source/Element.cpp \
+    source/Object.cpp \
+    source/Connector.cpp
 
 HEADERS += \
-    header/MainWindow.h
+    header/MainWindow.h \
+    header/Element.h \
+    header/Object.h \
+    header/Connector.h
