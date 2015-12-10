@@ -1,3 +1,4 @@
+include(qtpropertybrowser/qtpropertybrowser.pri)
 
 QT += core gui
 

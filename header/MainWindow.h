@@ -9,6 +9,10 @@
 #include <QPushButton>
 #include <QDockWidget>
 #include <QTreeWidget>
+#include <QVector2D>
+#include <QUndoView>
+
+#include "qttreepropertybrowser.h"
 
 class MainWindow : public QMainWindow
 {
@@ -38,6 +42,10 @@ private:
     QDockWidget* historyWindow;
 
     QTreeWidget* objectList;
+    QUndoView* historyView;
+    QtTreePropertyBrowser* propertyBrowser;
+
+    QVector2D menuButtonSize;
 
 
 public:
