@@ -5,12 +5,13 @@
 
 #include "header/MainWindow.h"
 
+
 void MainWindow::newActionSlot(){
 
     //temporary test:
-    QGraphicsItem *item = new Chip(color, xx, yy);
-    item->setPos(QPointF(i, j));
-    scene->addItem(item);
+    /*QGraphicsItem *item = new Object();
+    item->setPos(QPointF(23, 32));
+    scene->addItem(item); */
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){

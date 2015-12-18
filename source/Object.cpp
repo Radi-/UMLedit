@@ -1,12 +1,12 @@
 
 #include "header/Object.h"
 
-QRectF Chip::boundingRect() const{
+QRectF Object::boundingRect() const{
 
     return QRectF(0, 0, 110, 70);
 }
 
-QPainterPath Chip::shape() const{
+QPainterPath Object::shape() const{
 
     QPainterPath path;
     path.addRect(14, 14, 82, 42);

@@ -16,8 +16,6 @@ public:
     void setPosition(QVector2D position);
     void setColour(QColor colour);
 
-    virtual void render() = 0;
-
 };
 
 #endif // ELEMENT_H

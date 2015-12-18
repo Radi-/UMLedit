@@ -11,8 +11,6 @@ private:
 
 public:
 
-    void render();
-
 };
 
 #endif // CONNECTOR_H

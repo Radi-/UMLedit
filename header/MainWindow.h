@@ -11,9 +11,12 @@
 #include <QTreeWidget>
 #include <QVector2D>
 #include <QUndoView>
+#include <QGraphicsItem>
 //#include <QGraphicsScene>
 
 #include "qttreepropertybrowser.h"
+#include "header/Object.h"
+#include "header/Connector.h"
 
 class MainWindow : public QMainWindow
 {
