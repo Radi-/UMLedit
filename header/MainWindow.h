@@ -11,6 +11,7 @@
 #include <QTreeWidget>
 #include <QVector2D>
 #include <QUndoView>
+//#include <QGraphicsScene>
 
 #include "qttreepropertybrowser.h"
 
@@ -46,6 +47,8 @@ private:
     QtTreePropertyBrowser* propertyBrowser;
 
     QVector2D menuButtonSize;
+
+    //QGraphicsScene *graphicsScene;
 
 
 public:

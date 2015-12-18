@@ -7,6 +7,10 @@
 
 void MainWindow::newActionSlot(){
 
+    //temporary test:
+    QGraphicsItem *item = new Chip(color, xx, yy);
+    item->setPos(QPointF(i, j));
+    scene->addItem(item);
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){

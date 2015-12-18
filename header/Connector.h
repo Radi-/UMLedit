@@ -9,7 +9,6 @@ private:
 
     QVector2D endPoint;
 
-
 public:
 
     void render();
