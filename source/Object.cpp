@@ -13,7 +13,11 @@ QPainterPath Object::shape() const{
     return path;
 }
 
-void Object::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget){
+void Object::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget){
 
 
+    //QBrush b = painter->brush();
+    painter->setBrush(colour);
+    painter->drawRect(13, 13, 97, 57);
+    //painter->setBrush(b);
 }

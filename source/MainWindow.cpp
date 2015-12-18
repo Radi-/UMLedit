@@ -8,10 +8,15 @@
 
 void MainWindow::newActionSlot(){
 
+    QGraphicsView* view = new QGraphicsView();
+    QGraphicsScene* scene = new QGraphicsScene();
+    view->setScene(scene);
+    tabWidget->addTab(view, tr("Project 1"));
     //temporary test:
-    /*QGraphicsItem *item = new Object();
-    item->setPos(QPointF(23, 32));
-    scene->addItem(item); */
+    QGraphicsItem *item = new Object();
+    item->setPos(QPointF(0, 0));
+    static_cast<Object*>(item)->setColour(QColor(100, 0, 50, 255));
+    scene->addItem(item);
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){

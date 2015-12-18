@@ -3,10 +3,13 @@
 
 #include <QVector2D>
 #include <QGraphicsItem>
+#include <QPainter>
 
 class Element : public QGraphicsItem
 {
 private:
+
+protected:
 
     QVector2D position;
     QColor colour;

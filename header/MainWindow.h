@@ -12,7 +12,8 @@
 #include <QVector2D>
 #include <QUndoView>
 #include <QGraphicsItem>
-//#include <QGraphicsScene>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 #include "qttreepropertybrowser.h"
 #include "header/Object.h"
