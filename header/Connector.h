@@ -7,9 +7,16 @@ class Connector : public Element
 {
 private:
 
-    QVector2D endPoint;
+    QPoint endPoint;
 
 public:
+
+    Connector();
+    ~Connector();
+
+    void setEndPoint(QPoint endPoint);
+
+    QPainterPath shape() const override;
 
 };
 

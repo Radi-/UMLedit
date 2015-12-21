@@ -11,14 +11,14 @@
 #include <QPushButton>
 #include <QDockWidget>
 #include <QListWidget>
-#include <QVector2D>
 #include <QUndoView>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
 #include "qttreepropertybrowser.h"
-#include "header/Object.h"
+#include "header/CommentObject.h"
+#include "header/ClassObject.h"
 #include "header/Connector.h"
 
 class MainWindow : public QMainWindow
@@ -72,8 +72,6 @@ private:
     QListWidget* connectorList;
     QUndoView* historyView;
     QtTreePropertyBrowser* propertyBrowser;
-
-    QVector2D menuButtonSize;
 
     //QGraphicsScene *graphicsScene;
 
