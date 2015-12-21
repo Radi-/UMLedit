@@ -13,11 +13,13 @@ SOURCES += \
     source/main.cpp \
     source/MainWindow.cpp \
     source/Element.cpp \
-    source/Object.cpp \
-    source/Connector.cpp
+    source/Connector.cpp \
+    source/CommentObject.cpp \
+    source/ClassObject.cpp
 
 HEADERS += \
     header/MainWindow.h \
     header/Element.h \
-    header/Object.h \
-    header/Connector.h
+    header/Connector.h \
+    header/CommentObject.h \
+    header/ClassObject.h

@@ -15,9 +15,12 @@ void MainWindow::newActionSlot(){
     view->setScene(scene);
     tabWidget->addTab(view, tr("Project 1"));
     //temporary test:
-    QGraphicsItem *item = new Object();
+    QGraphicsItem *item = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
     item->setPos(QPointF(0, 0));
-    static_cast<Object*>(item)->setColour(QColor(100, 0, 50, 255));
+    scene->addItem(item);
+    //static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
+    item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
+    item->setPos(QPointF(200, 0));
     scene->addItem(item);
 }
 

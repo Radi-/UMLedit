@@ -1,7 +1,7 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
-#include <QVector2D>
+#include <QPoint>
 #include <QGraphicsItem>
 #include <QPainter>
 
@@ -11,13 +11,18 @@ private:
 
 protected:
 
-    QVector2D position;
+    QPoint size;
     QColor colour;
 
 public:
 
-    void setPosition(QVector2D position);
+    Element();
+    virtual ~Element();
+
+    void setSize(QPoint size);
     void setColour(QColor colour);
+
+    QRectF boundingRect() const override;
 
 };
 
