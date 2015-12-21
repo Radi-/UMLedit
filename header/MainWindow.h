@@ -5,11 +5,12 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QToolBar>
+#include <QStatusBar>
 #include <QAction>
 #include <QTabWidget>
 #include <QPushButton>
 #include <QDockWidget>
-#include <QTreeWidget>
+#include <QListWidget>
 #include <QVector2D>
 #include <QUndoView>
 #include <QGraphicsItem>
@@ -39,6 +40,8 @@ private slots:
 
 private:
 
+    QStatusBar* statusBar;
+
     QToolBar* fileToolBar;
     QToolBar* editToolBar;
 
@@ -65,7 +68,8 @@ private:
     QDockWidget* propertyWindow;
     QDockWidget* historyWindow;
 
-    QTreeWidget* objectList;
+    QListWidget* objectList;
+    QListWidget* connectorList;
     QUndoView* historyView;
     QtTreePropertyBrowser* propertyBrowser;
 

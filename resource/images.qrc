@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/assoc_arrow.svg</file>
+        <file>image/comm_object.svg</file>
+        <file>image/class_object.svg</file>
+    </qresource>
+</RCC>

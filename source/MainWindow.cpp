@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QIcon>
+#include <QListWidgetItem>
 
 #include "header/MainWindow.h"
 
@@ -56,6 +57,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     //instantiate elements and set properties:
 
+    //statusBar
+    statusBar = new QStatusBar(this);
+    setStatusBar(statusBar);
+
     //toolBar
     fileToolBar = new QToolBar(this);
     editToolBar = new QToolBar(this);
@@ -100,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
 
     /*Horrible hack or, as some may say, a temporary workaround
-    Basically set minimun width and height for tabbar and menubutton by
+    Basically set minimun width and height for menubutton by
     creating a temporary tab which is immediately deleted when the values are aquired */
     QWidget* randWidget = new QWidget();
 
@@ -131,10 +136,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     tabifyDockWidget(objectWindow, connectorWindow);
 
 
-    objectList = new QTreeWidget(objectWindow);
-    //objectList->
+    objectList = new QListWidget(objectWindow);
+    objectList->setUniformItemSizes(true);
+    objectList->setGridSize(QSize(128, 128));
+    objectList->setWordWrap(true);
+    objectList->setViewMode(QListView::IconMode);
+    objectList->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectList));
+    objectList->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectList));
     objectWindow->setWidget(objectList);
     objectWindow->setContentsMargins(0,0,0,0);
+
+    connectorList = new QListWidget(objectWindow);
+    connectorList->setUniformItemSizes(true);
+    connectorList->setViewMode(QListView::IconMode);
+    connectorList->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorList));
+    connectorWindow->setWidget(connectorList);
+    connectorWindow->setContentsMargins(0,0,0,0);
 
     historyView = new QUndoView(historyWindow);
     historyWindow->setWidget(historyView);

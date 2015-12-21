@@ -21,3 +21,6 @@ HEADERS += \
     header/Element.h \
     header/Object.h \
     header/Connector.h
+
+RESOURCES += \
+    resource/images.qrc
