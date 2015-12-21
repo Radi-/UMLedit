@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
+#include <QToolBar>
 #include <QAction>
 #include <QTabWidget>
 #include <QPushButton>
@@ -27,16 +28,34 @@ Q_OBJECT
 private slots:
 
     void newActionSlot();
+    void openActionSlot();
+    void saveActionSlot();
+    void undoActionSlot();
+    void redoActionSlot();
+    void cutActionSlot();
+    void copyActionSlot();
+    void pasteActionSlot();
+
 
 private:
+
+    QToolBar* fileToolBar;
+    QToolBar* editToolBar;
 
     QMenuBar* menuBar;
     QMenu* fileMenu;
     QMenu* editMenu;
     QMenu* burgerMenu;
+
     QAction* newAction;
     QAction* openAction;
     QAction* exitAction;
+    QAction* saveAction;
+    QAction* undoAction;
+    QAction* redoAction;
+    QAction* cutAction;
+    QAction* copyAction;
+    QAction* pasteAction;
 
     QTabWidget* tabWidget;
     QPushButton* menuButton;
