@@ -1,14 +1,39 @@
 
 #include "header/ClassObject.h"
+#include "qteditorfactory.h"
 
 ClassObject::ClassObject(){
 }
 
 ClassObject::ClassObject(QPoint size, QColor colour){
 
+    classGroup = new QtGroupPropertyManager(0);
+    stringPropertyManager = new QtStringPropertyManager(0);
+
+    namep = stringPropertyManager->addProperty("Name");
+    classProperties = classGroup->addProperty("Class");
+
+    classProperties->addSubProperty(namep);
+    classProperties->addSubProperty(colourp);
+    classProperties->addSubProperty(sizep);
+
+    QtSpinBoxFactory* spinBoxFactory = new QtSpinBoxFactory();
+    QtLineEditFactory* lineEditFactory = new QtLineEditFactory();
+    QtColorEditorFactory* colorFactory = new QtColorEditorFactory();
+
+    propertyBrowser = new QtTreePropertyBrowser();
+    propertyBrowser->setFactoryForManager(stringPropertyManager, lineEditFactory);
+    propertyBrowser->setFactoryForManager(colorPropertyManager, colorFactory);
+    propertyBrowser->setFactoryForManager(pointPropertyManager->subIntPropertyManager(), spinBoxFactory);
+
+    propertyBrowser->addProperty(classProperties);
+
+    pointPropertyManager->setValue(sizep, size);
+    colorPropertyManager->setValue(colourp, colour);
     this->size = size;
     this->colour = colour;
     name = "class name";
+    stringPropertyManager->setValue(namep, "class name");
     attributes.push_back("attribute 1");
     attributes.push_back("attribute 2");
     attributes.push_back("attribute 3");
@@ -42,7 +67,7 @@ void ClassObject::updateDrawingParameters(){
 
     bottomLineY = separatorLine2Y + (QFontMetrics(textFont).height() + 2 * textPadding) * methods.length();
 
-    edgeLineX = size.x();
+    edgeLineX = pointPropertyManager->value(sizep).x();
     int compareWidth = QFontMetrics(nameFont).width(name) + 2 * namePadding;
     if(compareWidth > edgeLineX) edgeLineX = compareWidth;
 
@@ -63,11 +88,10 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
 
     Q_UNUSED(option);
     Q_UNUSED(widget);
-
-    painter->setBrush(colour);
-    painter->drawRect(0, 0, size.x(), size.y());
-    painter->drawLine(0, separatorLine1Y, size.x(), separatorLine1Y);
-    painter->drawLine(0, separatorLine2Y, size.x(), separatorLine2Y);
+    painter->setBrush(colorPropertyManager->value(colourp));
+    painter->drawRect(0, 0, pointPropertyManager->value(sizep).x(), pointPropertyManager->value(sizep).y());
+    painter->drawLine(0, separatorLine1Y, pointPropertyManager->value(sizep).x(), separatorLine1Y);
+    painter->drawLine(0, separatorLine2Y, pointPropertyManager->value(sizep).x(), separatorLine2Y);
 
     painter->setFont(nameFont);
     painter->drawText((size.x() - painter->fontMetrics().width(name)) * 0.5,
@@ -86,4 +110,8 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
                           separatorLine2Y + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
                           methods.at(i));
     }
+}
+
+QtTreePropertyBrowser* ClassObject::getPropertyBrowser(){
+    return propertyBrowser;
 }

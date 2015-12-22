@@ -28,7 +28,7 @@ public:
 
     void setType(Type type);
     void setEndPoint(QPoint endPoint);
-
+    QtTreePropertyBrowser* getPropertyBrowser() override;
     QPainterPath shape() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 

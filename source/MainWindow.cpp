@@ -34,12 +34,9 @@ void MainWindow::newActionSlot(){
     item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
     item->setPos(QPointF(200, 0));
     scene->addItem(item);
-<<<<<<< HEAD
-    view->childAt(200, 0);
-=======
 
-
->>>>>>> 6c18eda69e2ef13e84929683a7a6e696a9e8f4b6
+    ClassObject* itemc = (ClassObject*)item;
+    propertyWindow->setWidget(itemc->getPropertyBrowser());
 }
 
 void MainWindow::openActionSlot(){

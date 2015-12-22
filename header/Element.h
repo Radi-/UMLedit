@@ -14,12 +14,11 @@ class Element : public QGraphicsItem
 private:
 
 protected:
-    //QtGroupPropertyManager* elementProperties;
     QtColorPropertyManager* colorPropertyManager;
     QtPointPropertyManager* pointPropertyManager;
 
-    QtProperty sizep;
-    QtProperty colourp;
+    QtProperty* sizep;
+    QtProperty* colourp;
     QPoint size;
     QColor colour;
 
@@ -39,5 +38,4 @@ public:
     QRectF boundingRect() const override;
 
 };
-
 #endif // ELEMENT_H

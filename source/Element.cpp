@@ -25,10 +25,13 @@ void Element::mouseReleaseEvent(QGraphicsSceneMouseEvent* event){
 
 Element::Element(){
 
+    colorPropertyManager = new QtColorPropertyManager(0);
+    pointPropertyManager = new QtPointPropertyManager(0);
+
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
-    sizep = pointPropertyManager->addProperty(tr("Size"));
-    colourp = colorPropertyManager->addProperty(tr("Colour"));
+    sizep = pointPropertyManager->addProperty("Size");
+    colourp = colorPropertyManager->addProperty("Colour");
 }
 
 Element::~Element(){
@@ -39,12 +42,15 @@ void Element::setSize(QPoint size){
     if(this->size.x() != size.x() || this->size.y() != size.y()){
         prepareGeometryChange();
         this->size = size;
+        pointPropertyManager->setValue(sizep, size);
     }
 }
 
 void Element::setColour(QColor colour){
 
     this->colour = colour;
+    colorPropertyManager->setValue(colourp, colour);
+
 }
 
 QRectF Element::boundingRect() const{

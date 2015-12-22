@@ -40,3 +40,7 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
     painter->drawText(QRect(0, 0, size.x(), size.y()), Qt::AlignCenter | Qt::TextWordWrap, string);
 }
 
+QtTreePropertyBrowser* CommentObject::getPropertyBrowser(){
+
+}
+

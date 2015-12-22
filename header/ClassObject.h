@@ -4,10 +4,21 @@
 #include <QString>
 
 #include "header/Object.h"
+#include "qttreepropertybrowser.h"
+#include "qtpropertymanager.h"
 
 class ClassObject : public Object
 {
 private:
+
+    QtTreePropertyBrowser* propertyBrowser;
+
+    QtGroupPropertyManager* classGroup;
+    QtStringPropertyManager* stringPropertyManager;
+    QtFontPropertyManager* fontPropertyManager;
+
+    QtProperty* classProperties;
+    QtProperty* namep;
 
     QString name;
     QVector<QString> attributes;
@@ -28,6 +39,8 @@ public:
     ClassObject();
     ClassObject(QPoint size, QColor colour);
     ~ClassObject();
+
+    QtTreePropertyBrowser* getPropertyBrowser() override;
 
     void setSize(QPoint size) override;
 

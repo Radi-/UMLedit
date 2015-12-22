@@ -40,3 +40,7 @@ void Connector::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
 
     painter->drawPath(path);
 }
+
+QtTreePropertyBrowser* Connector::getPropertyBrowser(){
+
+}
