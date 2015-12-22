@@ -1,6 +1,7 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
+#include <QtWidgets>
 #include <QPoint>
 #include <QGraphicsItem>
 #include <QPainter>
@@ -14,12 +15,16 @@ protected:
     QPoint size;
     QColor colour;
 
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+
 public:
 
     Element();
     virtual ~Element();
 
-    void setSize(QPoint size);
+    virtual void setSize(QPoint size);
     void setColour(QColor colour);
 
     QRectF boundingRect() const override;

@@ -17,27 +17,38 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     methods.push_back("method 3");
     nameFont = QFont("Sans", 10, QFont::Bold);
     textFont = QFont("Sans", 10);
+    paddingCoefficient = 0.2;
+    updateDrawingParameters();
 }
 
 ClassObject::~ClassObject(){
 }
 
+void ClassObject::setSize(QPoint size){
+
+    if(size.y() < bottomLineY) this->size.setY(bottomLineY);
+    Element::setSize(this->size);
+}
+
+void ClassObject::updateDrawingParameters(){
+
+    namePadding = QFontMetrics(nameFont).height() * paddingCoefficient;
+    textPadding = QFontMetrics(textFont).height() * paddingCoefficient;
+    separatorLine1Y = QFontMetrics(nameFont).height() + 2 * namePadding;
+    separatorLine2Y = separatorLine1Y + (QFontMetrics(textFont).height() + 2 * textPadding) * attributes.length();
+    bottomLineY = separatorLine2Y + (QFontMetrics(textFont).height() + 2 * textPadding) * methods.length();
+    setSize(size);
+}
+
 void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget){
 
-    const int nameFontHeight = QFontMetrics(nameFont).height();
-    const int textFontHeight = QFontMetrics(textFont).height();
-
-    const float paddingCoefficient = 0.2;
-    const int namePadding = nameFontHeight * paddingCoefficient;
-    const int textPadding = textFontHeight * paddingCoefficient;
-
-    const int firstLineY = nameFontHeight + 2 * namePadding;
-    const int secondLineY = firstLineY + (textFontHeight + 2 * textPadding) * attributes.length();
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
 
     painter->setBrush(colour);
     painter->drawRect(0, 0, size.x(), size.y());
-    painter->drawLine(0, firstLineY, size.x(), firstLineY);
-    painter->drawLine(0, secondLineY, size.x(), secondLineY);
+    painter->drawLine(0, separatorLine1Y, size.x(), separatorLine1Y);
+    painter->drawLine(0, separatorLine2Y, size.x(), separatorLine2Y);
 
     painter->setFont(nameFont);
     painter->drawText((size.x() - painter->fontMetrics().width(name)) * 0.5,
@@ -47,13 +58,13 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     painter->setFont(textFont);
     for(int i = 0; i < attributes.length(); i++){
         painter->drawText(textPadding,
-                          firstLineY + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
+                          separatorLine1Y + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
                           attributes.at(i));
     }
 
     for(int i = 0; i < methods.length(); i++){
         painter->drawText(textPadding,
-                          secondLineY + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
+                          separatorLine2Y + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
                           methods.at(i));
     }
 }

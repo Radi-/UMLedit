@@ -1,7 +1,33 @@
 
 #include "header/Element.h"
 
+
+void Element::mousePressEvent(QGraphicsSceneMouseEvent* event){
+
+    QGraphicsItem::mousePressEvent(event);
+    update();
+}
+
+void Element::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
+
+    if (event->modifiers() & Qt::ShiftModifier){
+        //stuff << event->pos();
+        update();
+        return;
+    }
+    QGraphicsItem::mouseMoveEvent(event);
+}
+
+void Element::mouseReleaseEvent(QGraphicsSceneMouseEvent* event){
+
+    QGraphicsItem::mouseReleaseEvent(event);
+    update();
+}
+
 Element::Element(){
+
+    setFlags(ItemIsSelectable | ItemIsMovable);
+    setAcceptHoverEvents(true);
 }
 
 Element::~Element(){

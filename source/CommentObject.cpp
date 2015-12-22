@@ -17,6 +17,9 @@ CommentObject::~CommentObject(){
 
 void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget){
 
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(colour);
 
     const QPoint points[5] = {
