@@ -28,6 +28,8 @@ Element::Element(){
 
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
+    sizep = pointPropertyManager->addProperty(tr("Size"));
+    colourp = colorPropertyManager->addProperty(tr("Colour"));
 }
 
 Element::~Element(){

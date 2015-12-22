@@ -6,12 +6,20 @@
 #include <QGraphicsItem>
 #include <QPainter>
 
+#include "qtpropertymanager.h"
+#include "qttreepropertybrowser.h"
+
 class Element : public QGraphicsItem
 {
 private:
 
 protected:
+    //QtGroupPropertyManager* elementProperties;
+    QtColorPropertyManager* colorPropertyManager;
+    QtPointPropertyManager* pointPropertyManager;
 
+    QtProperty sizep;
+    QtProperty colourp;
     QPoint size;
     QColor colour;
 
@@ -24,6 +32,7 @@ public:
     Element();
     virtual ~Element();
 
+    virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
     virtual void setSize(QPoint size);
     void setColour(QColor colour);
 

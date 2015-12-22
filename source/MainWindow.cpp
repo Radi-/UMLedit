@@ -8,7 +8,7 @@
 #include <QMessageBox>
 
 #include "header/MainWindow.h"
-#include "header/GraphicsView.h"
+#include "qteditorfactory.h"
 
 
 void MainWindow::newActionSlot(){
@@ -25,6 +25,7 @@ void MainWindow::newActionSlot(){
     item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
     item->setPos(QPointF(200, 0));
     scene->addItem(item);
+    view->childAt(200, 0);
 }
 
 void MainWindow::openActionSlot(){
@@ -44,23 +45,23 @@ void MainWindow::saveAsActionSlot(){
 }
 
 void MainWindow::undoActionSlot(){
-
+    //TBI in production version
 }
 
 void MainWindow::redoActionSlot(){
-
+    //TBI in production version
 }
 
 void MainWindow::cutActionSlot(){
-
+    //TBI in production version
 }
 
 void MainWindow::copyActionSlot(){
-
+    //TBI in production version
 }
 
 void MainWindow::pasteActionSlot(){
-
+    //TBI in production version
 }
 
 void MainWindow::connectSignals(){
@@ -68,6 +69,7 @@ void MainWindow::connectSignals(){
     connect(newAction, SIGNAL(triggered()), this, SLOT(newActionSlot()));
     connect(openAction, SIGNAL(triggered()), this, SLOT(openActionSlot()));
     connect(saveAction, SIGNAL(triggered()), this, SLOT(saveActionSlot()));
+    connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveActionSlot()));
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
     connect(undoAction, SIGNAL(triggered()), this, SLOT(undoActionSlot()));
     connect(redoAction, SIGNAL(triggered()), this, SLOT(redoActionSlot()));
@@ -196,8 +198,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     historyWindow->setWidget(historyView);
     historyWindow->setContentsMargins(0,0,0,0);
 
-    propertyBrowser = new QtTreePropertyBrowser(propertyWindow);
-    propertyWindow->setWidget(propertyBrowser);
+    //propertyBrowser = new QtTreePropertyBrowser(propertyWindow);
+    //propertyBrowser->s
+    //propertyWindow->setWidget(propertyBrowser);
     propertyWindow->setContentsMargins(0,0,0,0);
 
     //assign elements:
@@ -243,7 +246,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     addToolBar(fileToolBar);
     addToolBar(editToolBar);
     setCentralWidget(tabWidget);
-
+    tabWidget->setContentsMargins(0,0,0,0);
     connectSignals();
     this->showMaximized();
 
