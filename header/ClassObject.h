@@ -1,12 +1,11 @@
 #ifndef CLASSOBJECT_H
 #define CLASSOBJECT_H
 
-#include <QVector>
 #include <QString>
 
-#include "header/Element.h"
+#include "header/Object.h"
 
-class ClassObject : public Element
+class ClassObject : public Object
 {
 private:
 

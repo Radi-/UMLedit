@@ -5,8 +5,20 @@
 
 class Connector : public Element
 {
+
+public:
+    enum class Type{
+        association,
+        aggregation,
+        composition,
+        generalization,
+        realization,
+        dependency
+    };
+
 private:
 
+    Type type;
     QPoint endPoint;
 
 public:
@@ -14,9 +26,11 @@ public:
     Connector();
     ~Connector();
 
+    void setType(Type type);
     void setEndPoint(QPoint endPoint);
 
     QPainterPath shape() const override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 };
 
