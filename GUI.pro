@@ -15,14 +15,16 @@ SOURCES += \
     source/Element.cpp \
     source/Connector.cpp \
     source/CommentObject.cpp \
-    source/ClassObject.cpp
+    source/ClassObject.cpp \
+    source/GraphicsView.cpp
 
 HEADERS += \
     header/MainWindow.h \
     header/Element.h \
     header/Connector.h \
     header/CommentObject.h \
-    header/ClassObject.h
+    header/ClassObject.h \
+    header/GraphicsView.h
 
 RESOURCES += \
     resource/images.qrc

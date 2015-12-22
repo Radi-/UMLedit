@@ -3,5 +3,6 @@
         <file>image/assoc_arrow.svg</file>
         <file>image/comm_object.svg</file>
         <file>image/class_object.svg</file>
+        <file>image/menu_icon.svg</file>
     </qresource>
 </RCC>

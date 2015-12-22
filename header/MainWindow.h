@@ -20,6 +20,7 @@
 #include "header/CommentObject.h"
 #include "header/ClassObject.h"
 #include "header/Connector.h"
+#include "header/GraphicsView.h"
 
 class MainWindow : public QMainWindow
 {
@@ -31,11 +32,14 @@ private slots:
     void newActionSlot();
     void openActionSlot();
     void saveActionSlot();
+    void saveAsActionSlot();
     void undoActionSlot();
     void redoActionSlot();
     void cutActionSlot();
     void copyActionSlot();
     void pasteActionSlot();
+
+    bool tabCloseRequestedSlot(int index);
 
 
 private:
@@ -54,6 +58,7 @@ private:
     QAction* openAction;
     QAction* exitAction;
     QAction* saveAction;
+    QAction* saveAsAction;
     QAction* undoAction;
     QAction* redoAction;
     QAction* cutAction;
@@ -73,7 +78,7 @@ private:
     QUndoView* historyView;
     QtTreePropertyBrowser* propertyBrowser;
 
-    //QGraphicsScene *graphicsScene;
+    void connectSignals();
 
 
 public:

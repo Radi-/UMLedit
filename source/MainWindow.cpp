@@ -5,13 +5,15 @@
 #include <QFileDialog>
 #include <QIcon>
 #include <QListWidgetItem>
+#include <QMessageBox>
 
 #include "header/MainWindow.h"
+#include "header/GraphicsView.h"
 
 
 void MainWindow::newActionSlot(){
 
-    QGraphicsView* view = new QGraphicsView();
+    GraphicsView* view = new GraphicsView(this);
     QGraphicsScene* scene = new QGraphicsScene();
     view->setScene(scene);
     tabWidget->addTab(view, tr("Project 1"));
@@ -28,9 +30,16 @@ void MainWindow::newActionSlot(){
 void MainWindow::openActionSlot(){
     QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Open File(s)"), QString(), tr("All Files (*.*);;"
                                                                                                  "UMLEdit File (*.uef)"));
+    //To be implemented when the actual program is implemented
 }
 
 void MainWindow::saveActionSlot(){
+
+    GraphicsView* view = (GraphicsView*)tabWidget->currentWidget();
+    view->saveFile();
+}
+
+void MainWindow::saveAsActionSlot(){
 
 }
 
@@ -52,6 +61,42 @@ void MainWindow::copyActionSlot(){
 
 void MainWindow::pasteActionSlot(){
 
+}
+
+void MainWindow::connectSignals(){
+
+    connect(newAction, SIGNAL(triggered()), this, SLOT(newActionSlot()));
+    connect(openAction, SIGNAL(triggered()), this, SLOT(openActionSlot()));
+    connect(saveAction, SIGNAL(triggered()), this, SLOT(saveActionSlot()));
+    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+    connect(undoAction, SIGNAL(triggered()), this, SLOT(undoActionSlot()));
+    connect(redoAction, SIGNAL(triggered()), this, SLOT(redoActionSlot()));
+    connect(cutAction, SIGNAL(triggered()), this, SLOT(cutActionSlot()));
+    connect(copyAction, SIGNAL(triggered()), this, SLOT(copyActionSlot()));
+    connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteActionSlot()));
+
+    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
+}
+
+bool MainWindow::tabCloseRequestedSlot(int index){
+    GraphicsView* view = (GraphicsView*)tabWidget->widget(index);
+    if (view->hasChanged()){
+        QMessageBox::StandardButton reply = QMessageBox::question(this,
+                                                                  tr("Save document?"),
+                                                                  tr("Do you want to save changes made to %1?")
+                                                                  .arg(tabWidget->tabText(index)),
+                                                                  QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+        if(reply == QMessageBox::Yes){
+            if (!view->saveFile()){
+                return false;
+            }
+        }
+        else if (reply == QMessageBox::Cancel){
+            return false;
+        }
+    }
+    delete view;
+    return true;
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
@@ -77,25 +122,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     //menuBar/fileMenu
     newAction = new QAction(QIcon::fromTheme("document-new"), tr("New"), fileMenu);
-    connect(newAction, SIGNAL(triggered()), this, SLOT(newActionSlot()));
     openAction = new QAction(QIcon::fromTheme("document-open"), tr("Open"), fileMenu);
-    connect(openAction, SIGNAL(triggered()), this, SLOT(openActionSlot()));
     saveAction = new QAction(QIcon::fromTheme("document-save"), tr("Save"), fileMenu);
-    connect(saveAction, SIGNAL(triggered()), this, SLOT(saveActionSlot()));
+    saveAsAction = new QAction(QIcon::fromTheme("document-save-as"), tr("Save As..."), fileMenu);
     exitAction = new QAction(QIcon::fromTheme("application-exit"), tr("Exit"), fileMenu);
-    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
     //menuBar/editMenu
     undoAction = new QAction(QIcon::fromTheme("edit-undo"), tr("Undo"), editMenu);
-    connect(undoAction, SIGNAL(triggered()), this, SLOT(undoActionSlot()));
     redoAction = new QAction(QIcon::fromTheme("edit-redo"), tr("Redo"), editMenu);
-    connect(redoAction, SIGNAL(triggered()), this, SLOT(redoActionSlot()));
     cutAction = new QAction(QIcon::fromTheme("edit-cut"), tr("Cut"), editMenu);
-    connect(cutAction, SIGNAL(triggered()), this, SLOT(cutActionSlot()));
     copyAction = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy"), editMenu);
-    connect(copyAction, SIGNAL(triggered()), this, SLOT(copyActionSlot()));
     pasteAction = new QAction(QIcon::fromTheme("edit-paste"), tr("Paste"), editMenu);
-    connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteActionSlot()));
 
     //Create the tab widget which displays the projects:
     tabWidget = new QTabWidget(this);
@@ -104,20 +141,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     //Menu button for the alternative mode when menubar is hidden
     menuButton = new QPushButton(tabWidget);
-    menuButton->setText(tr("Menu"));
+    //menuButton->setText(tr("Menu"));
+    menuButton->setIcon(QIcon(":/image/menu_icon.svg"));
     tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
 
     /*Horrible hack or, as some may say, a temporary workaround
-    Basically set minimun width and height for menubutton by
-    creating a temporary tab which is immediately deleted when the values are aquired */
+    Basically set fixed height for menubutton by creating a temporary tab
+    which is immediately deleted when the value is aquired */
     QWidget* randWidget = new QWidget();
 
     tabWidget->addTab(randWidget, tr("Temp"));
 
-    menuButton->setMinimumHeight(menuButton->height()-1);
-    menuButton->setMinimumWidth(menuButton->width()-20);
-    menuButton->setMaximumHeight(menuButton->height());
-    menuButton->setMaximumWidth(menuButton->width());
+    menuButton->setFixedSize(48, menuButton->height()-1);
+    menuButton->setFlat(true);
 
     tabWidget->removeTab(0);
 
@@ -172,6 +208,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     fileMenu->addAction(openAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveAction);
+    fileMenu->addAction(saveAsAction);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
 
@@ -187,6 +224,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(openAction);
     fileToolBar->addAction(saveAction);
+    fileToolBar->addAction(saveAsAction);
 
     editToolBar->addAction(undoAction);
     editToolBar->addAction(redoAction);
@@ -206,6 +244,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     addToolBar(editToolBar);
     setCentralWidget(tabWidget);
 
+    connectSignals();
     this->showMaximized();
 
 }
