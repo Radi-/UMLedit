@@ -11,7 +11,6 @@ void Element::mousePressEvent(QGraphicsSceneMouseEvent* event){
 void Element::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
 
     if (event->modifiers() & Qt::ShiftModifier){
-        //stuff << event->pos();
         update();
         return;
     }

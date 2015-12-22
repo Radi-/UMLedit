@@ -16,7 +16,8 @@ SOURCES += \
     source/Connector.cpp \
     source/CommentObject.cpp \
     source/ClassObject.cpp \
-    source/GraphicsView.cpp
+    source/GraphicsView.cpp \
+    source/Object.cpp
 
 HEADERS += \
     header/MainWindow.h \
@@ -24,7 +25,8 @@ HEADERS += \
     header/Connector.h \
     header/CommentObject.h \
     header/ClassObject.h \
-    header/GraphicsView.h
+    header/GraphicsView.h \
+    header/Object.h
 
 RESOURCES += \
     resource/images.qrc

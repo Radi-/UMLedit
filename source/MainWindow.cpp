@@ -17,14 +17,25 @@ void MainWindow::newActionSlot(){
     QGraphicsScene* scene = new QGraphicsScene();
     view->setScene(scene);
     tabWidget->addTab(view, tr("Project 1"));
+
     //temporary test:
     QGraphicsItem *item = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
     item->setPos(QPointF(0, 0));
     scene->addItem(item);
+
+    Connector* connector = new Connector();
+    connector->setPos(QPointF(200, 0));
+    connector->setEndPoint(QPoint(50, 0));
+    connector->setType(Connector::Type::dependency);
+    connector->setColour(Qt::black);
+    scene->addItem(static_cast<QGraphicsItem*>(connector));
+
     //static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
     item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
     item->setPos(QPointF(200, 0));
     scene->addItem(item);
+
+
 }
 
 void MainWindow::openActionSlot(){
