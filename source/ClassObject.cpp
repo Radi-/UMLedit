@@ -24,13 +24,15 @@ ClassObject::~ClassObject(){
 
 void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget){
 
-    const int nameFontHeight = QFontMetrics(nameFont).xHeight();
-    const int textFontHeight = QFontMetrics(textFont).xHeight();
-    const float textOffsetCoefficient = 1.2;
-    const int firstLineY = nameFontHeight * (1.0 + textOffsetCoefficient * 2);
-    const int secondLineY = firstLineY +
-                            (textFontHeight * (1.0 + textOffsetCoefficient)) * attributes.length() +
-                             textFontHeight * textOffsetCoefficient;
+    const int nameFontHeight = QFontMetrics(nameFont).height();
+    const int textFontHeight = QFontMetrics(textFont).height();
+
+    const float paddingCoefficient = 0.2;
+    const int namePadding = nameFontHeight * paddingCoefficient;
+    const int textPadding = textFontHeight * paddingCoefficient;
+
+    const int firstLineY = nameFontHeight + 2 * namePadding;
+    const int secondLineY = firstLineY + (textFontHeight + 2 * textPadding) * attributes.length();
 
     painter->setBrush(colour);
     painter->drawRect(0, 0, size.x(), size.y());
@@ -39,19 +41,19 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
 
     painter->setFont(nameFont);
     painter->drawText((size.x() - painter->fontMetrics().width(name)) * 0.5,
-                      nameFontHeight * (1.0 + textOffsetCoefficient),
+                      QFontMetrics(nameFont).ascent() + namePadding,
                       name);
 
     painter->setFont(textFont);
-    for(unsigned int i = 0; i < attributes.length(); i++){
-        painter->drawText(textFontHeight * textOffsetCoefficient,
-                          firstLineY + (i + 1) * textFontHeight * (1.0 + textOffsetCoefficient),
+    for(int i = 0; i < attributes.length(); i++){
+        painter->drawText(textPadding,
+                          firstLineY + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
                           attributes.at(i));
     }
 
-    for(unsigned int i = 0; i < methods.length(); i++){
-        painter->drawText(textFontHeight * textOffsetCoefficient,
-                          secondLineY + (i + 1) * textFontHeight * (1.0 + textOffsetCoefficient),
+    for(int i = 0; i < methods.length(); i++){
+        painter->drawText(textPadding,
+                          secondLineY + (i + 1) * (QFontMetrics(textFont).ascent() + textPadding) + i * (QFontMetrics(textFont).descent() + textPadding),
                           methods.at(i));
     }
 }
