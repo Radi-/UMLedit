@@ -22,6 +22,7 @@ private:
     int separatorLine1Y;
     int separatorLine2Y;
     int bottomLineY;
+    int edgeLineX;
 
 public:
 

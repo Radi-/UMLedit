@@ -26,7 +26,9 @@ ClassObject::~ClassObject(){
 
 void ClassObject::setSize(QPoint size){
 
+    //enforce minimum size of the element so that all text fits inside it
     if(size.y() < bottomLineY) this->size.setY(bottomLineY);
+    if(size.x() < edgeLineX) this->size.setX(edgeLineX);
     Element::setSize(this->size);
 }
 
@@ -34,9 +36,26 @@ void ClassObject::updateDrawingParameters(){
 
     namePadding = QFontMetrics(nameFont).height() * paddingCoefficient;
     textPadding = QFontMetrics(textFont).height() * paddingCoefficient;
+
     separatorLine1Y = QFontMetrics(nameFont).height() + 2 * namePadding;
     separatorLine2Y = separatorLine1Y + (QFontMetrics(textFont).height() + 2 * textPadding) * attributes.length();
+
     bottomLineY = separatorLine2Y + (QFontMetrics(textFont).height() + 2 * textPadding) * methods.length();
+
+    edgeLineX = size.x();
+    int compareWidth = QFontMetrics(nameFont).width(name) + 2 * namePadding;
+    if(compareWidth > edgeLineX) edgeLineX = compareWidth;
+
+    for(int i = 0; i < attributes.length(); i++){
+        compareWidth = QFontMetrics(textFont).width(attributes.at(i)) + 2 * textPadding;
+        if(compareWidth > edgeLineX) edgeLineX = compareWidth;
+    }
+
+    for(int i = 0; i < methods.length(); i++){
+        compareWidth = QFontMetrics(textFont).width(methods.at(i)) + 2 * textPadding;
+        if(compareWidth > edgeLineX) edgeLineX = compareWidth;
+    }
+
     setSize(size);
 }
 
