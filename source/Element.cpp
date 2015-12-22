@@ -23,7 +23,7 @@ void Element::mouseReleaseEvent(QGraphicsSceneMouseEvent* event){
     update();
 }
 
-Element::Element(){
+Element::Element(QGraphicsItem *parent) : QGraphicsItem(parent){
 
     colorPropertyManager = new QtColorPropertyManager(0);
     pointPropertyManager = new QtPointPropertyManager(0);

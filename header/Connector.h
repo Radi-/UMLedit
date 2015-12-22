@@ -6,6 +6,8 @@
 class Connector : public Element
 {
 
+Q_OBJECT
+
 public:
     enum class Type{
         association,
@@ -23,7 +25,7 @@ private:
 
 public:
 
-    Connector();
+    explicit Connector(QGraphicsItem *parent = 0);
     ~Connector();
 
     void setType(Type type);

@@ -3,10 +3,13 @@
 
 #include <QString>
 
-#include "header/Element.h"
+#include "header/Object.h"
 
-class CommentObject : public Element
+class CommentObject : public Object
 {
+
+Q_OBJECT
+
 private:
 
     QString string;

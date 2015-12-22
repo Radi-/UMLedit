@@ -11,6 +11,9 @@
 
 class Element : public QGraphicsItem
 {
+
+Q_OBJECT
+
 private:
 
 protected:
@@ -28,7 +31,7 @@ protected:
 
 public:
 
-    Element();
+    explicit Element(QGraphicsItem *parent = 0);
     virtual ~Element();
 
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;

@@ -6,6 +6,9 @@
 
 class Object : public Element
 {
+
+Q_OBJECT
+
 private:
 
 protected:
@@ -17,7 +20,7 @@ protected:
 
 public:
 
-    Object();
+    explicit Object(QGraphicsItem *parent = 0);
     virtual ~Object();
 
 };

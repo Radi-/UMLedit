@@ -9,15 +9,18 @@
 
 class ClassObject : public Object
 {
+
+Q_OBJECT
+
 private:
 
     QtTreePropertyBrowser* propertyBrowser;
 
-    QtGroupPropertyManager* classGroup;
+    QtGroupPropertyManager* groupPropertyManager;
     QtStringPropertyManager* stringPropertyManager;
     QtFontPropertyManager* fontPropertyManager;
 
-    QtProperty* classProperties;
+    QtProperty* classGroup;
     QtProperty* namep;
 
     QString name;
@@ -34,17 +37,18 @@ private:
     int bottomLineY;
     int edgeLineX;
 
+public slots:
+    void updateDrawingParameters(); //should be called every time when name, attributes, methods, nameFont or textFont change
+
 public:
 
     ClassObject();
-    ClassObject(QPoint size, QColor colour);
+    explicit ClassObject(QPoint size, QColor colour, QGraphicsItem *parent = 0);
     ~ClassObject();
 
     QtTreePropertyBrowser* getPropertyBrowser() override;
 
     void setSize(QPoint size) override;
-
-    void updateDrawingParameters(); //should be called every time when name, attributes, methods, nameFont or textFont change
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 

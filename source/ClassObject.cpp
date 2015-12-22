@@ -5,17 +5,17 @@
 ClassObject::ClassObject(){
 }
 
-ClassObject::ClassObject(QPoint size, QColor colour){
+ClassObject::ClassObject(QPoint size, QColor colour, QGraphicsItem* parent) : Object(parent){
 
-    classGroup = new QtGroupPropertyManager(0);
+    connect(pointPropertyManager, SIGNAL(valueChanged(QtProperty*,QPoint)), this, SLOT(updateDrawingParameters()));
+    groupPropertyManager = new QtGroupPropertyManager(0);
     stringPropertyManager = new QtStringPropertyManager(0);
-
     namep = stringPropertyManager->addProperty("Name");
-    classProperties = classGroup->addProperty("Class");
+    classGroup = groupPropertyManager->addProperty("Class");
 
-    classProperties->addSubProperty(namep);
-    classProperties->addSubProperty(colourp);
-    classProperties->addSubProperty(sizep);
+    classGroup->addSubProperty(namep);
+    classGroup->addSubProperty(colourp);
+    classGroup->addSubProperty(sizep);
 
     QtSpinBoxFactory* spinBoxFactory = new QtSpinBoxFactory();
     QtLineEditFactory* lineEditFactory = new QtLineEditFactory();
@@ -26,14 +26,12 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     propertyBrowser->setFactoryForManager(colorPropertyManager, colorFactory);
     propertyBrowser->setFactoryForManager(pointPropertyManager->subIntPropertyManager(), spinBoxFactory);
 
-    propertyBrowser->addProperty(classProperties);
+    propertyBrowser->addProperty(classGroup);
 
     pointPropertyManager->setValue(sizep, size);
     colorPropertyManager->setValue(colourp, colour);
-    this->size = size;
-    this->colour = colour;
-    name = "class name";
     stringPropertyManager->setValue(namep, "class name");
+
     attributes.push_back("attribute 1");
     attributes.push_back("attribute 2");
     attributes.push_back("attribute 3");
@@ -59,6 +57,8 @@ void ClassObject::setSize(QPoint size){
 
 void ClassObject::updateDrawingParameters(){
 
+    prepareGeometryChange();
+
     namePadding = QFontMetrics(nameFont).height() * paddingCoefficient;
     textPadding = QFontMetrics(textFont).height() * paddingCoefficient;
 
@@ -81,7 +81,7 @@ void ClassObject::updateDrawingParameters(){
         if(compareWidth > edgeLineX) edgeLineX = compareWidth;
     }
 
-    setSize(size);
+    //setSize(size);
 }
 
 void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget){

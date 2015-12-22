@@ -7,7 +7,8 @@
 
 class GraphicsView : public QGraphicsView
 {
-    Q_OBJECT
+
+Q_OBJECT
 
 private:
    QString filePath;
