@@ -23,13 +23,14 @@ void Element::mouseReleaseEvent(QGraphicsSceneMouseEvent* event){
     update();
 }
 
-Element::Element(QGraphicsItem *parent) : QGraphicsItem(parent){
+Element::Element(){
 
-    colorPropertyManager = new QtColorPropertyManager(0);
-    pointPropertyManager = new QtPointPropertyManager(0);
+    colorPropertyManager = new QtColorPropertyManager(this);
+    pointPropertyManager = new QtPointPropertyManager(this);
 
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
+    size = pointPropertyManager->addProperty("Actual Size");
     sizep = pointPropertyManager->addProperty("Size");
     colourp = colorPropertyManager->addProperty("Colour");
 }
@@ -39,10 +40,10 @@ Element::~Element(){
 
 void Element::setSize(QPoint size){
 
-    if(this->size.x() != size.x() || this->size.y() != size.y()){
+    if( pointPropertyManager->value(this->size).x() != size.x() ||  pointPropertyManager->value(this->size).y() != size.y()){
         prepareGeometryChange();
-        this->size = size;
-        pointPropertyManager->setValue(sizep, size);
+        pointPropertyManager->setValue(this->size, size);
+        update();
     }
 }
 
@@ -55,5 +56,5 @@ void Element::setColour(QColor colour){
 
 QRectF Element::boundingRect() const{
 
-    return QRectF(0, 0, size.x(), size.y());
+    return QRectF(0, 0, pointPropertyManager->value(this->size).x(), pointPropertyManager->value(this->size).y());
 }

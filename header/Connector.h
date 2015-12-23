@@ -25,7 +25,7 @@ private:
 
 public:
 
-    explicit Connector(QGraphicsItem *parent = 0);
+    Connector();
     ~Connector();
 
     void setType(Type type);

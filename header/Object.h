@@ -20,7 +20,7 @@ protected:
 
 public:
 
-    explicit Object(QGraphicsItem *parent = 0);
+    Object();
     virtual ~Object();
 
 };

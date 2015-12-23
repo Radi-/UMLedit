@@ -5,15 +5,14 @@
 ClassObject::ClassObject(){
 }
 
-ClassObject::ClassObject(QPoint size, QColor colour, QGraphicsItem* parent) : Object(parent){
+ClassObject::ClassObject(QPoint size, QColor colour){
 
-    connect(pointPropertyManager, SIGNAL(valueChanged(QtProperty*,QPoint)), this, SLOT(updateDrawingParameters()));
-    groupPropertyManager = new QtGroupPropertyManager(0);
-    stringPropertyManager = new QtStringPropertyManager(0);
-    namep = stringPropertyManager->addProperty("Name");
+    groupPropertyManager = new QtGroupPropertyManager(this);
+    stringPropertyManager = new QtStringPropertyManager(this);
+    name = stringPropertyManager->addProperty("Name");
     classGroup = groupPropertyManager->addProperty("Class");
 
-    classGroup->addSubProperty(namep);
+    classGroup->addSubProperty(name);
     classGroup->addSubProperty(colourp);
     classGroup->addSubProperty(sizep);
 
@@ -30,7 +29,7 @@ ClassObject::ClassObject(QPoint size, QColor colour, QGraphicsItem* parent) : Ob
 
     pointPropertyManager->setValue(sizep, size);
     colorPropertyManager->setValue(colourp, colour);
-    stringPropertyManager->setValue(namep, "class name");
+    stringPropertyManager->setValue(name, "class name");
 
     attributes.push_back("attribute 1");
     attributes.push_back("attribute 2");
@@ -41,23 +40,49 @@ ClassObject::ClassObject(QPoint size, QColor colour, QGraphicsItem* parent) : Ob
     nameFont = QFont("Sans", 10, QFont::Bold);
     textFont = QFont("Sans", 10);
     paddingCoefficient = 0.2;
+
+    connect(pointPropertyManager, SIGNAL(valueChanged(QtProperty*,QPoint)), this, SLOT(pointPropertyUpdated(QtProperty*,QPoint)));
+    connect(stringPropertyManager, SIGNAL(valueChanged(QtProperty*,QString)), this, SLOT(stringPropertyUpdated(QtProperty*,QString)));
+    connect(colorPropertyManager, SIGNAL(valueChanged(QtProperty*,QColor)), this, SLOT(update()));
+
     updateDrawingParameters();
+    setSize(size);
 }
 
 ClassObject::~ClassObject(){
 }
 
+void ClassObject::pointPropertyUpdated(QtProperty* property, QPoint size){
+    if (property == sizep){
+        updateDrawingParameters();
+        setSize(size);
+    }
+    else if (property == this->size && (pointPropertyManager->value(this->size).x() != pointPropertyManager->value(sizep).x() ||
+                                  pointPropertyManager->value(this->size).y() != pointPropertyManager->value(sizep).y())){
+        pointPropertyManager->blockSignals(true);
+        pointPropertyManager->setValue(sizep, size);
+
+        pointPropertyManager->blockSignals(false);
+    }
+}
+
+void ClassObject::stringPropertyUpdated(QtProperty* property, QString string){
+    Q_UNUSED(property)
+    Q_UNUSED(string)
+    updateDrawingParameters();
+    setSize(pointPropertyManager->value(this->size));
+    update();
+}
+
 void ClassObject::setSize(QPoint size){
 
     //enforce minimum size of the element so that all text fits inside it
-    if(size.y() < bottomLineY) this->size.setY(bottomLineY);
-    if(size.x() < edgeLineX) this->size.setX(edgeLineX);
-    Element::setSize(this->size);
+    if(size.y() < bottomLineY) size.setY(bottomLineY);
+    if(size.x() < edgeLineX) size.setX(edgeLineX);
+    Element::setSize(size);
 }
 
 void ClassObject::updateDrawingParameters(){
-
-    prepareGeometryChange();
 
     namePadding = QFontMetrics(nameFont).height() * paddingCoefficient;
     textPadding = QFontMetrics(textFont).height() * paddingCoefficient;
@@ -68,7 +93,7 @@ void ClassObject::updateDrawingParameters(){
     bottomLineY = separatorLine2Y + (QFontMetrics(textFont).height() + 2 * textPadding) * methods.length();
 
     edgeLineX = pointPropertyManager->value(sizep).x();
-    int compareWidth = QFontMetrics(nameFont).width(name) + 2 * namePadding;
+    int compareWidth = QFontMetrics(nameFont).width(stringPropertyManager->value(name)) + 2 * namePadding;
     if(compareWidth > edgeLineX) edgeLineX = compareWidth;
 
     for(int i = 0; i < attributes.length(); i++){
@@ -81,7 +106,6 @@ void ClassObject::updateDrawingParameters(){
         if(compareWidth > edgeLineX) edgeLineX = compareWidth;
     }
 
-    //setSize(size);
 }
 
 void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget){
@@ -89,14 +113,14 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->setBrush(colorPropertyManager->value(colourp));
-    painter->drawRect(0, 0, pointPropertyManager->value(sizep).x(), pointPropertyManager->value(sizep).y());
-    painter->drawLine(0, separatorLine1Y, pointPropertyManager->value(sizep).x(), separatorLine1Y);
-    painter->drawLine(0, separatorLine2Y, pointPropertyManager->value(sizep).x(), separatorLine2Y);
+    painter->drawRect(0, 0, pointPropertyManager->value(size).x(), pointPropertyManager->value(size).y());
+    painter->drawLine(0, separatorLine1Y, pointPropertyManager->value(size).x(), separatorLine1Y);
+    painter->drawLine(0, separatorLine2Y, pointPropertyManager->value(size).x(), separatorLine2Y);
 
     painter->setFont(nameFont);
-    painter->drawText((size.x() - painter->fontMetrics().width(name)) * 0.5,
+    painter->drawText((pointPropertyManager->value(size).x() - painter->fontMetrics().width(stringPropertyManager->value(name))) * 0.5,
                       QFontMetrics(nameFont).ascent() + namePadding,
-                      name);
+                      stringPropertyManager->value(name));
 
     painter->setFont(textFont);
     for(int i = 0; i < attributes.length(); i++){

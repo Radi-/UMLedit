@@ -8,12 +8,12 @@
 #include <QMessageBox>
 
 #include "header/MainWindow.h"
-#include "qteditorfactory.h"
 
 
 void MainWindow::newActionSlot(){
 
     GraphicsView* view = new GraphicsView(this);
+    view->setFrameStyle(QFrame::NoFrame);
     QGraphicsScene* scene = new QGraphicsScene();
     view->setScene(scene);
     tabWidget->addTab(view, tr("Project 1"));
@@ -165,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     tabWidget->addTab(randWidget, tr("Temp"));
 
-    menuButton->setFixedSize(48, menuButton->height()-1);
+    menuButton->setFixedSize(32, menuButton->height()-1);
     menuButton->setFlat(true);
 
     tabWidget->removeTab(0);
@@ -193,6 +193,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     objectList->setGridSize(QSize(128, 128));
     objectList->setWordWrap(true);
     objectList->setViewMode(QListView::IconMode);
+    objectList->setFrameStyle(QFrame::NoFrame);
     objectList->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectList));
     objectList->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectList));
     objectWindow->setWidget(objectList);
@@ -201,17 +202,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     connectorList = new QListWidget(objectWindow);
     connectorList->setUniformItemSizes(true);
     connectorList->setViewMode(QListView::IconMode);
+    connectorList->setFrameStyle(QFrame::NoFrame);
     connectorList->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorList));
     connectorWindow->setWidget(connectorList);
     connectorWindow->setContentsMargins(0,0,0,0);
 
     historyView = new QUndoView(historyWindow);
+    historyView->setFrameStyle(QFrame::NoFrame);
     historyWindow->setWidget(historyView);
     historyWindow->setContentsMargins(0,0,0,0);
 
-    //propertyBrowser = new QtTreePropertyBrowser(propertyWindow);
-    //propertyBrowser->s
-    //propertyWindow->setWidget(propertyBrowser);
     propertyWindow->setContentsMargins(0,0,0,0);
 
     //assign elements:

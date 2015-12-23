@@ -3,13 +3,13 @@
 
 #include <QtWidgets>
 #include <QPoint>
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QPainter>
 
 #include "qtpropertymanager.h"
 #include "qttreepropertybrowser.h"
 
-class Element : public QGraphicsItem
+class Element : public QGraphicsObject
 {
 
 Q_OBJECT
@@ -22,7 +22,7 @@ protected:
 
     QtProperty* sizep;
     QtProperty* colourp;
-    QPoint size;
+    QtProperty* size;
     QColor colour;
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -31,7 +31,7 @@ protected:
 
 public:
 
-    explicit Element(QGraphicsItem *parent = 0);
+    Element();
     virtual ~Element();
 
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;

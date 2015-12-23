@@ -8,7 +8,7 @@ void Object::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
     Element::mouseMoveEvent(event);
 }
 
-Object::Object(QGraphicsItem* parent) : Element(parent){
+Object::Object(){
 }
 
 Object::~Object(){

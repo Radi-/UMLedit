@@ -1,7 +1,7 @@
 
 #include "header/Connector.h"
 
-Connector::Connector(QGraphicsItem* parent) : Element(parent){
+Connector::Connector(){
 }
 
 Connector::~Connector(){

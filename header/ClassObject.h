@@ -21,9 +21,8 @@ private:
     QtFontPropertyManager* fontPropertyManager;
 
     QtProperty* classGroup;
-    QtProperty* namep;
+    QtProperty* name;
 
-    QString name;
     QVector<QString> attributes;
     QVector<QString> methods;
 
@@ -39,11 +38,13 @@ private:
 
 public slots:
     void updateDrawingParameters(); //should be called every time when name, attributes, methods, nameFont or textFont change
+    void pointPropertyUpdated(QtProperty* property, QPoint size);
+    void stringPropertyUpdated(QtProperty* property, QString string);
 
 public:
 
     ClassObject();
-    explicit ClassObject(QPoint size, QColor colour, QGraphicsItem *parent = 0);
+    ClassObject(QPoint size, QColor colour);
     ~ClassObject();
 
     QtTreePropertyBrowser* getPropertyBrowser() override;
