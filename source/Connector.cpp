@@ -42,5 +42,5 @@ void Connector::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
 }
 
 QtTreePropertyBrowser* Connector::getPropertyBrowser(){
-
+    return propertyBrowser;
 }

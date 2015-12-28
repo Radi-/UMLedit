@@ -41,6 +41,6 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
 }
 
 QtTreePropertyBrowser* CommentObject::getPropertyBrowser(){
-
+    return propertyBrowser;
 }
 

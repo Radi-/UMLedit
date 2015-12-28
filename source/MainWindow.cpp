@@ -30,12 +30,12 @@ void MainWindow::newActionSlot(){
     connector->setColour(Qt::black);
     scene->addItem(static_cast<QGraphicsItem*>(connector));
 
-    //static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
+    static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
     item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
     item->setPos(QPointF(200, 0));
     scene->addItem(item);
 
-    ClassObject* itemc = (ClassObject*)item;
+    ClassObject* itemc = static_cast<ClassObject*>(item);
     propertyWindow->setWidget(itemc->getPropertyBrowser());
 }
 
@@ -165,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     tabWidget->addTab(randWidget, tr("Temp"));
 
-    menuButton->setFixedSize(32, menuButton->height()-1);
+    menuButton->setFixedSize(48, menuButton->height()-1);
     menuButton->setFlat(true);
 
     tabWidget->removeTab(0);

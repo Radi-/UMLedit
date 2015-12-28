@@ -14,8 +14,6 @@ Q_OBJECT
 
 private:
 
-    QtTreePropertyBrowser* propertyBrowser;
-
     QtGroupPropertyManager* groupPropertyManager;
     QtStringPropertyManager* stringPropertyManager;
     QtFontPropertyManager* fontPropertyManager;

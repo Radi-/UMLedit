@@ -17,6 +17,8 @@ Q_OBJECT
 private:
 
 protected:
+    QtTreePropertyBrowser* propertyBrowser;
+
     QtColorPropertyManager* colorPropertyManager;
     QtPointPropertyManager* pointPropertyManager;
 

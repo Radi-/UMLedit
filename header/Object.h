@@ -22,6 +22,7 @@ public:
 
     Object();
     virtual ~Object();
+    virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
 
 };
 
