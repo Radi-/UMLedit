@@ -5,6 +5,8 @@
 #include <QPoint>
 #include <QGraphicsObject>
 #include <QPainter>
+#include <QPointer>
+#include <memory>
 
 #include "qtpropertymanager.h"
 #include "qttreepropertybrowser.h"
@@ -17,10 +19,10 @@ Q_OBJECT
 private:
 
 protected:
-    QtTreePropertyBrowser* propertyBrowser;
+    QPointer<QtTreePropertyBrowser> propertyBrowser;
 
-    QtColorPropertyManager* colorPropertyManager;
-    QtPointPropertyManager* pointPropertyManager;
+    QPointer<QtColorPropertyManager> colorPropertyManager;
+    QPointer<QtPointPropertyManager> pointPropertyManager;
 
     QtProperty* sizep;
     QtProperty* colour;

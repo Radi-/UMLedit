@@ -2,10 +2,12 @@
 #define CLASSOBJECT_H
 
 #include <QString>
+#include <QPointer>
 
 #include "header/Object.h"
 #include "qttreepropertybrowser.h"
 #include "qtpropertymanager.h"
+#include "qteditorfactory.h"
 
 class ClassObject : public Object
 {
@@ -14,20 +16,24 @@ Q_OBJECT
 
 private:
 
-    QtGroupPropertyManager* groupPropertyManager;
-    QtStringPropertyManager* stringPropertyManager;
-    QtFontPropertyManager* fontPropertyManager;
+    QPointer<QtSpinBoxFactory> spinBoxFactory;
+    QPointer<QtLineEditFactory> lineEditFactory;
+    QPointer<QtColorEditorFactory> colorFactory;
+    QPointer<QtFontEditorFactory> fontFactory;
 
+    QPointer<QtGroupPropertyManager> groupPropertyManager;
+    QPointer<QtStringPropertyManager> stringPropertyManager;
+    QPointer<QtFontPropertyManager> fontPropertyManager;
+
+    QtProperty* fontGroup;
     QtProperty* classGroup;
     QtProperty* name;
 
     QVector<QString> attributes;
     QVector<QString> methods;
 
-    QtProperty* nameFontp;
-    QtProperty* textFontp;
-    QFont nameFont;
-    QFont textFont;
+    QtProperty* nameFont;
+    QtProperty* textFont;
     float paddingCoefficient;
     int namePadding;
     int textPadding;
