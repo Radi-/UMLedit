@@ -8,13 +8,21 @@
 #include <QMessageBox>
 
 #include "header/MainWindow.h"
+#include "header/GraphicsScene.h"
 
 
 void MainWindow::newActionSlot(){
 
     GraphicsView* view = new GraphicsView(this);
     view->setFrameStyle(QFrame::NoFrame);
-    QGraphicsScene* scene = new QGraphicsScene();
+    view->setMouseTracking(true);
+    view->setDragMode(QGraphicsView::RubberBandDrag);
+    view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    view->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+    view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    GraphicsScene* scene = new GraphicsScene(this);
+    connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateStatusBarCoordinates(qreal,qreal)));
+    connect(scene, SIGNAL(selectionChanged()), this, SLOT(setPropertyBrowser()));
     view->setScene(scene);
     tabWidget->addTab(view, tr("Project 1"));
 
@@ -23,20 +31,18 @@ void MainWindow::newActionSlot(){
     item->setPos(QPointF(0, 0));
     scene->addItem(item);
 
-    Connector* connector = new Connector();
-    connector->setPos(QPointF(200, 0));
-    connector->setEndPoint(QPoint(50, 0));
-    connector->setType(Connector::Type::dependency);
-    connector->setColour(Qt::black);
-    scene->addItem(static_cast<QGraphicsItem*>(connector));
-
     static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
     item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
-    item->setPos(QPointF(200, 0));
+    item->setPos(QPointF(100, 0));
     scene->addItem(item);
 
-    ClassObject* itemc = static_cast<ClassObject*>(item);
-    propertyWindow->setWidget(itemc->getPropertyBrowser());
+    Connector* connector = new Connector();
+    connector->setPos(QPoint(100,0));
+    connector->setEndPoint(QPoint(50, 150));
+    connector->setType(Connector::Type::dependency);
+    connector->setColour(Qt::black);
+    scene->addItem(connector);
+
 }
 
 void MainWindow::openActionSlot(){
@@ -89,6 +95,7 @@ void MainWindow::connectSignals(){
     connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteActionSlot()));
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
+
 }
 
 bool MainWindow::tabCloseRequestedSlot(int index){
@@ -112,6 +119,28 @@ bool MainWindow::tabCloseRequestedSlot(int index){
     return true;
 }
 
+void MainWindow::setPropertyBrowser(){
+    QGraphicsView* view = static_cast<QGraphicsView*>(tabWidget->currentWidget());
+    QGraphicsScene* scene = view->scene();
+    if (scene->selectedItems().size() < 1){
+        propertyWindow->setWidget(selectionLabel);
+        selectionLabel->setText(tr("No item(s) selected."));
+    }
+    else if (scene->selectedItems().size() == 1){
+        Element* item = static_cast<Element*>(scene->selectedItems().first());
+        propertyWindow->setWidget(item->getPropertyBrowser());
+    }
+    else{
+        propertyWindow->setWidget(selectionLabel);
+        selectionLabel->setText(tr("Multiple items selected."));
+    }
+}
+
+void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
+
+    coordinatesLabel->setText(QString("(%1,%2)").arg(x).arg(y));
+}
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     this->setWindowTitle("UMLedit");
@@ -120,6 +149,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     //statusBar
     statusBar = new QStatusBar(this);
+    coordinatesLabel = new QLabel(statusBar);
     setStatusBar(statusBar);
 
     //toolBar
@@ -252,6 +282,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     burgerMenu->addMenu(editMenu);
     menuButton->setMenu(burgerMenu);
 
+    selectionLabel = new QLabel(propertyWindow);
+    selectionLabel->setText(tr("No item(s) selected."));
+    propertyWindow->setWidget(selectionLabel);
     //drawer menu mode:
     setMenuBar(menuBar);
     addToolBar(fileToolBar);

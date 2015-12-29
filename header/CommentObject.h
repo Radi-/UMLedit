@@ -12,8 +12,11 @@ Q_OBJECT
 
 private:
 
-    QString string;
-    QFont font;
+    QtStringPropertyManager* stringPropertyManager;
+    QtFontPropertyManager* fontPropertyManager;
+
+    QtProperty* string;
+    QtProperty* font;
 
 public:
 

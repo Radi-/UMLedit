@@ -6,10 +6,17 @@ CommentObject::CommentObject(){
 
 CommentObject::CommentObject(QPoint size, QColor colour){
 
+    stringPropertyManager = new QtStringPropertyManager(this);
+    fontPropertyManager = new QtFontPropertyManager(this);
+
+    string = stringPropertyManager->addProperty("Text");
+    font = fontPropertyManager->addProperty("Font");
+
+    fontPropertyManager->setValue(this->font, QFont("Sans", 10));
+    stringPropertyManager->setValue(this->string, "comment");
     pointPropertyManager->setValue(this->size, size);
-    this->colour = colour;
-    string = "comment";
-    font = QFont("Sans", 10);
+    colorPropertyManager->setValue(this->colour, colour);
+
 }
 
 CommentObject::~CommentObject(){
@@ -20,7 +27,7 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setBrush(colour);
+    painter->setBrush(colorPropertyManager->value(colour));
 
     const QPoint points[5] = {
         QPoint(0, 0),
@@ -36,8 +43,10 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
 
     //painter->drawLine(0, size.y() * 0.5, size.x(), size.y() * 0.5);
 
-    painter->setFont(font);
-    painter->drawText(QRect(0, 0, pointPropertyManager->value(size).x(), pointPropertyManager->value(size).y()), Qt::AlignCenter | Qt::TextWordWrap, string);
+    painter->setFont(fontPropertyManager->value(font));
+    painter->drawText(QRect(0, 0, pointPropertyManager->value(size).x(), pointPropertyManager->value(size).y()),
+                      Qt::AlignCenter | Qt::TextWordWrap,
+                      stringPropertyManager->value(string));
 }
 
 QtTreePropertyBrowser* CommentObject::getPropertyBrowser(){

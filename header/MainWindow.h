@@ -41,8 +41,13 @@ private slots:
 
     bool tabCloseRequestedSlot(int index);
 
+    void setPropertyBrowser();
+
 
 private:
+
+    QLabel* selectionLabel;
+    QLabel* coordinatesLabel;
 
     QStatusBar* statusBar;
 
@@ -80,6 +85,8 @@ private:
 
     void connectSignals();
 
+public slots:
+    void updateStatusBarCoordinates(qreal x, qreal y);
 
 public:
     explicit MainWindow(QWidget* parent = 0);

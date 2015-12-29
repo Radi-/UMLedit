@@ -24,6 +24,8 @@ private:
     QVector<QString> attributes;
     QVector<QString> methods;
 
+    QtProperty* nameFontp;
+    QtProperty* textFontp;
     QFont nameFont;
     QFont textFont;
     float paddingCoefficient;

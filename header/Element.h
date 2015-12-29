@@ -23,9 +23,8 @@ protected:
     QtPointPropertyManager* pointPropertyManager;
 
     QtProperty* sizep;
-    QtProperty* colourp;
+    QtProperty* colour;
     QtProperty* size;
-    QColor colour;
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;

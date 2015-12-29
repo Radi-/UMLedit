@@ -5,6 +5,7 @@
 #include "header/GraphicsView.h"
 
 GraphicsView::GraphicsView(QWidget* parent) : QGraphicsView(parent){
+
     filePath = QString();
     changed = false;
 }

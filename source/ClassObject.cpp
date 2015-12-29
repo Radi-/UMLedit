@@ -13,7 +13,7 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     classGroup = groupPropertyManager->addProperty("Class");
 
     classGroup->addSubProperty(name);
-    classGroup->addSubProperty(colourp);
+    classGroup->addSubProperty(this->colour);
     classGroup->addSubProperty(sizep);
 
     QtSpinBoxFactory* spinBoxFactory = new QtSpinBoxFactory();
@@ -24,11 +24,11 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     propertyBrowser->setFactoryForManager(stringPropertyManager, lineEditFactory);
     propertyBrowser->setFactoryForManager(colorPropertyManager, colorFactory);
     propertyBrowser->setFactoryForManager(pointPropertyManager->subIntPropertyManager(), spinBoxFactory);
-
+    propertyBrowser->setFactoryForManager(colorPropertyManager->subIntPropertyManager(), spinBoxFactory);
     propertyBrowser->addProperty(classGroup);
 
     pointPropertyManager->setValue(sizep, size);
-    colorPropertyManager->setValue(colourp, colour);
+    colorPropertyManager->setValue(this->colour, colour);
     stringPropertyManager->setValue(name, "class name");
 
     attributes.push_back("attribute 1");
@@ -43,7 +43,7 @@ ClassObject::ClassObject(QPoint size, QColor colour){
 
     connect(pointPropertyManager, SIGNAL(valueChanged(QtProperty*,QPoint)), this, SLOT(pointPropertyUpdated(QtProperty*,QPoint)));
     connect(stringPropertyManager, SIGNAL(valueChanged(QtProperty*,QString)), this, SLOT(stringPropertyUpdated(QtProperty*,QString)));
-    connect(colorPropertyManager, SIGNAL(valueChanged(QtProperty*,QColor)), this, SLOT(update()));
+    connect(colorPropertyManager, SIGNAL(valueChanged(QtProperty*,QColor)), this, SLOT(updateDrawingParameters()));
 
     updateDrawingParameters();
     setSize(size);
@@ -112,7 +112,7 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
 
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->setBrush(colorPropertyManager->value(colourp));
+    painter->setBrush(colorPropertyManager->value(colour));
     painter->drawRect(0, 0, pointPropertyManager->value(size).x(), pointPropertyManager->value(size).y());
     painter->drawLine(0, separatorLine1Y, pointPropertyManager->value(size).x(), separatorLine1Y);
     painter->drawLine(0, separatorLine2Y, pointPropertyManager->value(size).x(), separatorLine2Y);

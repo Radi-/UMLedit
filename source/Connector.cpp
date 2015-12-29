@@ -30,15 +30,11 @@ void Connector::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    QPen pen(colour, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen pen(colorPropertyManager->value(colour), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     if(type == Type::realization || type == Type::dependency) pen.setStyle(Qt::DashLine);
     painter->setPen(pen);
 
-    QPainterPath path;
-    path.moveTo(pos());
-    path.lineTo(endPoint);
-
-    painter->drawPath(path);
+    painter->drawLine(QPoint(0, 0), endPoint - pos());
 }
 
 QtTreePropertyBrowser* Connector::getPropertyBrowser(){

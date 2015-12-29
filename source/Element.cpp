@@ -32,7 +32,7 @@ Element::Element(){
     setAcceptHoverEvents(true);
     size = pointPropertyManager->addProperty("Actual Size");
     sizep = pointPropertyManager->addProperty("Size");
-    colourp = colorPropertyManager->addProperty("Colour");
+    colour = colorPropertyManager->addProperty("Colour");
 }
 
 Element::~Element(){
@@ -49,8 +49,7 @@ void Element::setSize(QPoint size){
 
 void Element::setColour(QColor colour){
 
-    this->colour = colour;
-    colorPropertyManager->setValue(colourp, colour);
+    colorPropertyManager->setValue(this->colour, colour);
 
 }
 
