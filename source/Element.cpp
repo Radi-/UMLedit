@@ -30,9 +30,9 @@ Element::Element(){
 
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
-    size = pointPropertyManager->addProperty("Actual Size");
-    sizep = pointPropertyManager->addProperty("Size");
-    colour = colorPropertyManager->addProperty("Colour");
+    size = pointPropertyManager.data()->addProperty("Actual Size");
+    sizep = pointPropertyManager.data()->addProperty("Size");
+    colour = colorPropertyManager.data()->addProperty("Colour");
 }
 
 Element::~Element(){
