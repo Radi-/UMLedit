@@ -50,7 +50,6 @@ void Element::setSize(QPoint size){
 void Element::setColour(QColor colour){
 
     colorPropertyManager->setValue(this->colour, colour);
-
 }
 
 QRectF Element::boundingRect() const{

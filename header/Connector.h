@@ -23,6 +23,8 @@ private:
     Type type;
     QPoint endPoint;
 
+    int boundingRectPadding; //arbitrary padding to all sides of the bounding rectangle to account for arrow head symbols
+
 public:
 
     Connector();
@@ -31,8 +33,10 @@ public:
     void setType(Type type);
     void setEndPoint(QPoint endPoint);
     QtTreePropertyBrowser* getPropertyBrowser() override;
+
     QPainterPath shape() const override;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+    QRectF boundingRect() const override;
 
 };
 

@@ -30,15 +30,15 @@ void MainWindow::newActionSlot(){
     QGraphicsItem *item = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
     item->setPos(QPointF(0, 0));
     scene->addItem(item);
-
     static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
+
     item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
-    item->setPos(QPointF(100, 0));
+    item->setPos(QPointF(100, 100));
     scene->addItem(item);
 
     Connector* connector = new Connector();
-    connector->setPos(QPoint(100,0));
-    connector->setEndPoint(QPoint(50, 150));
+    connector->setPos(QPoint(100,100));
+    connector->setEndPoint(QPoint(200, -200));
     connector->setType(Connector::Type::dependency);
     connector->setColour(Qt::black);
     scene->addItem(connector);

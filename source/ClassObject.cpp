@@ -53,6 +53,7 @@ ClassObject::~ClassObject(){
 }
 
 void ClassObject::pointPropertyUpdated(QtProperty* property, QPoint size){
+
     if (property == sizep){
         updateDrawingParameters();
         setSize(size);

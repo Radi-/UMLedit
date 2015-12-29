@@ -23,7 +23,9 @@ public:
     CommentObject();
     CommentObject(QPoint size, QColor colour);
     ~CommentObject();
+
     QtTreePropertyBrowser* getPropertyBrowser() override;
+
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 };

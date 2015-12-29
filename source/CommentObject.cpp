@@ -41,8 +41,6 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
     painter->drawLine(pointPropertyManager->value(size).x(), 20, pointPropertyManager->value(size).x() - 20, 20);
     painter->drawLine(pointPropertyManager->value(size).x() - 20, 0, pointPropertyManager->value(size).x() - 20, 20);
 
-    //painter->drawLine(0, size.y() * 0.5, size.x(), size.y() * 0.5);
-
     painter->setFont(fontPropertyManager->value(font));
     painter->drawText(QRect(0, 0, pointPropertyManager->value(size).x(), pointPropertyManager->value(size).y()),
                       Qt::AlignCenter | Qt::TextWordWrap,

@@ -2,6 +2,8 @@
 #include "header/Connector.h"
 
 Connector::Connector(){
+
+    boundingRectPadding = 50;
 }
 
 Connector::~Connector(){
@@ -15,6 +17,10 @@ void Connector::setType(Type type){
 void Connector::setEndPoint(QPoint endPoint){
 
     this->endPoint = endPoint;
+}
+
+QtTreePropertyBrowser* Connector::getPropertyBrowser(){
+    return propertyBrowser;
 }
 
 QPainterPath Connector::shape() const{
@@ -37,6 +43,17 @@ void Connector::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
     painter->drawLine(QPoint(0, 0), endPoint - pos());
 }
 
-QtTreePropertyBrowser* Connector::getPropertyBrowser(){
-    return propertyBrowser;
+QRectF Connector::boundingRect() const{
+
+    QPointF vector = endPoint - pos();
+
+    if(vector.x() > 0){
+        if(vector.y() > 0) return QRectF(-boundingRectPadding, -boundingRectPadding, vector.x() + boundingRectPadding, vector.y() + boundingRectPadding);
+        return QRectF(-boundingRectPadding, boundingRectPadding, vector.x() + boundingRectPadding, vector.y() - boundingRectPadding);
+    }
+    if(vector.x() > 0){
+        if(vector.y() > 0) return QRectF(boundingRectPadding, -boundingRectPadding, vector.x() - boundingRectPadding, vector.y() + boundingRectPadding);
+        return QRectF(boundingRectPadding, boundingRectPadding, vector.x() - boundingRectPadding, vector.y() - boundingRectPadding);
+    }
 }
+

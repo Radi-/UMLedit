@@ -48,7 +48,6 @@ public:
     ~ClassObject();
 
     QtTreePropertyBrowser* getPropertyBrowser() override;
-
     void setSize(QPoint size) override;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
