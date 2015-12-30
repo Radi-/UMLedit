@@ -115,7 +115,9 @@ bool MainWindow::tabCloseRequestedSlot(int index){
             return false;
         }
     }
+    propertyWindow->setWidget(selectionLabel);
     delete view;
+    setPropertyBrowser();
     return true;
 }
 

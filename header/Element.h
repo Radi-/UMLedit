@@ -8,6 +8,7 @@
 #include <QScopedPointer>
 
 #include "qtpropertymanager.h"
+#include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
 
 class Element : public QGraphicsObject
@@ -17,12 +18,21 @@ Q_OBJECT
 
 private:
 
+protected slots:
+    virtual void updateDrawingParameters();
+    virtual void pointPropertyUpdated(QtProperty* property, QPoint size);
+
 protected:
     QScopedPointer<QtTreePropertyBrowser> propertyBrowser;
 
+    QScopedPointer<QtGroupPropertyManager> groupPropertyManager;
     QScopedPointer<QtColorPropertyManager> colorPropertyManager;
     QScopedPointer<QtPointPropertyManager> pointPropertyManager;
 
+    QScopedPointer<QtSpinBoxFactory> spinBoxFactory;
+    QScopedPointer<QtColorEditorFactory> colorFactory;
+
+    QtProperty* elementGroup;
     QtProperty* sizep;
     QtProperty* colour;
     QtProperty* size;
