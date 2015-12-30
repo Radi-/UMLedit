@@ -12,8 +12,8 @@ Q_OBJECT
 
 private:
 
-    QtStringPropertyManager* stringPropertyManager;
-    QtFontPropertyManager* fontPropertyManager;
+    QScopedPointer<QtStringPropertyManager> stringPropertyManager;
+    QScopedPointer<QtFontPropertyManager> fontPropertyManager;
 
     QtProperty* string;
     QtProperty* font;

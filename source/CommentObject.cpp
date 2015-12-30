@@ -6,8 +6,8 @@ CommentObject::CommentObject(){
 
 CommentObject::CommentObject(QPoint size, QColor colour){
 
-    stringPropertyManager = new QtStringPropertyManager(this);
-    fontPropertyManager = new QtFontPropertyManager(this);
+    stringPropertyManager.reset(new QtStringPropertyManager(this));
+    fontPropertyManager.reset(new QtFontPropertyManager(this));
 
     string = stringPropertyManager->addProperty("Text");
     font = fontPropertyManager->addProperty("Font");
@@ -48,6 +48,6 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
 }
 
 QtTreePropertyBrowser* CommentObject::getPropertyBrowser(){
-    return propertyBrowser;
+    return propertyBrowser.data();
 }
 

@@ -2,7 +2,7 @@
 #define CLASSOBJECT_H
 
 #include <QString>
-#include <QPointer>
+#include <QScopedPointer>
 
 #include "header/Object.h"
 #include "qttreepropertybrowser.h"
@@ -16,14 +16,14 @@ Q_OBJECT
 
 private:
 
-    QPointer<QtSpinBoxFactory> spinBoxFactory;
-    QPointer<QtLineEditFactory> lineEditFactory;
-    QPointer<QtColorEditorFactory> colorFactory;
-    QPointer<QtFontEditorFactory> fontFactory;
+    QScopedPointer<QtSpinBoxFactory> spinBoxFactory;
+    QScopedPointer<QtLineEditFactory> lineEditFactory;
+    QScopedPointer<QtColorEditorFactory> colorFactory;
+    QScopedPointer<QtFontEditorFactory> fontFactory;
 
-    QPointer<QtGroupPropertyManager> groupPropertyManager;
-    QPointer<QtStringPropertyManager> stringPropertyManager;
-    QPointer<QtFontPropertyManager> fontPropertyManager;
+    QScopedPointer<QtGroupPropertyManager> groupPropertyManager;
+    QScopedPointer<QtStringPropertyManager> stringPropertyManager;
+    QScopedPointer<QtFontPropertyManager> fontPropertyManager;
 
     QtProperty* fontGroup;
     QtProperty* classGroup;
