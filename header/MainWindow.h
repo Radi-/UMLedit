@@ -29,6 +29,8 @@ Q_OBJECT
 
 private slots:
 
+    void closeEvent(QCloseEvent *);
+
     void newActionSlot();
     void openActionSlot();
     void saveActionSlot();

@@ -8,11 +8,40 @@ void Object::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
     Element::mouseMoveEvent(event);
 }
 
+void Object::pointPropertyUpdated(QtProperty* property, QPoint size){
+
+    if (property == sizep){
+        updateDrawingParameters();
+        setSize(size);
+    }
+    else if (property == this->size && (pointPropertyManager.data()->value(this->size).x() != pointPropertyManager.data()->value(sizep).x() ||
+                                  pointPropertyManager.data()->value(this->size).y() != pointPropertyManager.data()->value(sizep).y())){
+        pointPropertyManager.data()->blockSignals(true);
+        pointPropertyManager->setValue(sizep, size);
+
+        pointPropertyManager.data()->blockSignals(false);
+    }
+}
+
+void Object::updateDrawingParameters(){
+
+}
+
 Object::Object(){
 
     pointPropertyManager.reset(new QtPointPropertyManager(this));
-    size = pointPropertyManager.data()->addProperty("Actual Size");
-    sizep = pointPropertyManager.data()->addProperty("Size");
+
+    size = pointPropertyManager->addProperty("Actual Size");
+    sizep = pointPropertyManager->addProperty("Size");
+    objectGroup = groupPropertyManager->addProperty("Object");
+
+    objectGroup->addSubProperty(sizep);
+
+    propertyBrowser->setFactoryForManager(pointPropertyManager->subIntPropertyManager(), spinBoxFactory.data());
+    propertyBrowser->addProperty(objectGroup);
+
+    connect(pointPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QPoint)), this, SLOT(pointPropertyUpdated(QtProperty*,QPoint)));
+    connect(colorPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QColor)), this, SLOT(updateDrawingParameters()));
 }
 
 Object::~Object(){

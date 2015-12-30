@@ -10,6 +10,25 @@
 #include "header/MainWindow.h"
 #include "header/GraphicsScene.h"
 
+void MainWindow::closeEvent(QCloseEvent *event){
+
+    bool ignoreEvent = false;
+
+    while(tabWidget->count() > 0){
+        if(!this->tabCloseRequestedSlot(0)){
+            ignoreEvent = true;
+            break;
+        }
+
+    }
+
+    if(ignoreEvent){
+        event->ignore();
+    }
+    else{
+        event->accept();
+    }
+}
 
 void MainWindow::newActionSlot(){
 
@@ -118,7 +137,12 @@ bool MainWindow::tabCloseRequestedSlot(int index){
             return false;
         }
     }
+    propertyWindow->setWidget(selectionLabel);
+    tabWidget->removeTab(index);
     delete view;
+    if(tabWidget->count() > 0){
+        setPropertyBrowser();
+    }
     return true;
 }
 

@@ -6,9 +6,8 @@ ClassObject::ClassObject(){
 
 ClassObject::ClassObject(QPoint size, QColor colour){
 
-    groupPropertyManager.reset(new QtGroupPropertyManager(this));
-    stringPropertyManager.reset(new QtStringPropertyManager(this));
-    fontPropertyManager.reset(new QtFontPropertyManager(this));
+    stringPropertyManager.reset(new QtStringPropertyManager());
+    fontPropertyManager.reset(new QtFontPropertyManager());
 
     nameFont = fontPropertyManager.data()->addProperty("Name");
     textFont = fontPropertyManager.data()->addProperty("Attributes and methods");
@@ -20,19 +19,12 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     fontGroup->addSubProperty(textFont);
 
     classGroup->addSubProperty(name);
-    classGroup->addSubProperty(this->colour);
-    classGroup->addSubProperty(sizep);
     classGroup->addSubProperty(fontGroup);
 
-    spinBoxFactory.reset(new QtSpinBoxFactory());
     lineEditFactory.reset(new QtLineEditFactory());
-    colorFactory.reset(new QtColorEditorFactory());
     fontFactory.reset(new QtFontEditorFactory());
 
     propertyBrowser.data()->setFactoryForManager(stringPropertyManager.data(), lineEditFactory.data());
-    propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data(), colorFactory.data());
-    propertyBrowser.data()->setFactoryForManager(pointPropertyManager.data()->subIntPropertyManager(), spinBoxFactory.data());
-    propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data()->subIntPropertyManager(), spinBoxFactory.data());
     propertyBrowser.data()->setFactoryForManager(fontPropertyManager.data(), fontFactory.data());
     propertyBrowser.data()->addProperty(classGroup);
 
@@ -50,10 +42,8 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     fontPropertyManager.data()->setValue(textFont, QFont("Sans", 10));
     paddingCoefficient = 0.2;
 
-    connect(pointPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QPoint)), this, SLOT(pointPropertyUpdated(QtProperty*,QPoint)));
     connect(stringPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QString)), this, SLOT(stringPropertyUpdated(QtProperty*,QString)));
-    connect(colorPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QColor)), this, SLOT(updateDrawingParameters()));
-    connect(fontPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QFont)), this, SLOT(updateDrawingParameters()));
+    connect(fontPropertyManager.data(), SIGNAL(valueChanged(QtProperty*,QFont)), this, SLOT(stringPropertyUpdated(QtProperty*,QString)));
 
     updateDrawingParameters();
     setSize(size);
@@ -61,21 +51,6 @@ ClassObject::ClassObject(QPoint size, QColor colour){
 
 ClassObject::~ClassObject(){
 
-}
-
-void ClassObject::pointPropertyUpdated(QtProperty* property, QPoint size){
-
-    if (property == sizep){
-        updateDrawingParameters();
-        setSize(size);
-    }
-    else if (property == this->size && (pointPropertyManager.data()->value(this->size).x() != pointPropertyManager.data()->value(sizep).x() ||
-                                  pointPropertyManager.data()->value(this->size).y() != pointPropertyManager.data()->value(sizep).y())){
-        pointPropertyManager.data()->blockSignals(true);
-        pointPropertyManager->setValue(sizep, size);
-
-        pointPropertyManager.data()->blockSignals(false);
-    }
 }
 
 void ClassObject::stringPropertyUpdated(QtProperty* property, QString string){

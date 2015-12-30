@@ -8,6 +8,7 @@
 #include <QScopedPointer>
 
 #include "qtpropertymanager.h"
+#include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
 
 class Element : public QGraphicsObject
@@ -20,8 +21,13 @@ private:
 protected:
     QScopedPointer<QtTreePropertyBrowser> propertyBrowser;
 
+    QScopedPointer<QtGroupPropertyManager> groupPropertyManager;
     QScopedPointer<QtColorPropertyManager> colorPropertyManager;
 
+    QScopedPointer<QtSpinBoxFactory> spinBoxFactory;
+    QScopedPointer<QtColorEditorFactory> colorFactory;
+
+    QtProperty* elementGroup;
     QtProperty* colour;
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

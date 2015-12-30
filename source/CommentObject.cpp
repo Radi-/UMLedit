@@ -12,10 +12,10 @@ CommentObject::CommentObject(QPoint size, QColor colour){
     string = stringPropertyManager->addProperty("Text");
     font = fontPropertyManager->addProperty("Font");
 
-    fontPropertyManager->setValue(this->font, QFont("Sans", 10));
-    stringPropertyManager->setValue(this->string, "comment");
-    pointPropertyManager->setValue(this->size, size);
-    colorPropertyManager->setValue(this->colour, colour);
+    fontPropertyManager.data()->setValue(this->font, QFont("Sans", 10));
+    stringPropertyManager.data()->setValue(this->string, "comment");
+    pointPropertyManager.data()->setValue(this->size, size);
+    colorPropertyManager.data()->setValue(this->colour, colour);
 
 }
 
