@@ -16,6 +16,7 @@ void Connector::setType(Type type){
 
 void Connector::setEndPoint(QPoint endPoint){
 
+    prepareGeometryChange();
     this->endPoint = endPoint;
 }
 
@@ -49,11 +50,11 @@ QRectF Connector::boundingRect() const{
 
     if(vector.x() > 0){
         if(vector.y() > 0) return QRectF(-boundingRectPadding, -boundingRectPadding, vector.x() + boundingRectPadding, vector.y() + boundingRectPadding);
-        return QRectF(-boundingRectPadding, boundingRectPadding, vector.x() + boundingRectPadding, vector.y() - boundingRectPadding);
+        return QRectF(-boundingRectPadding, vector.y() - boundingRectPadding, vector.x() + boundingRectPadding, -vector.y() + boundingRectPadding);
     }
-    if(vector.x() > 0){
-        if(vector.y() > 0) return QRectF(boundingRectPadding, -boundingRectPadding, vector.x() - boundingRectPadding, vector.y() + boundingRectPadding);
-        return QRectF(boundingRectPadding, boundingRectPadding, vector.x() - boundingRectPadding, vector.y() - boundingRectPadding);
+    if(vector.x() < 0){
+        if(vector.y() > 0) return QRectF(vector.x() - boundingRectPadding, -boundingRectPadding, -vector.x() + boundingRectPadding, vector.y() + boundingRectPadding);
+        return QRectF(vector.x() - boundingRectPadding, vector.y() - boundingRectPadding, -vector.x() + boundingRectPadding, -vector.y() + boundingRectPadding);
     }
 }
 

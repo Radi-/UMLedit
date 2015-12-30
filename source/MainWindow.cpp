@@ -38,7 +38,7 @@ void MainWindow::newActionSlot(){
 
     Connector* connector = new Connector();
     connector->setPos(QPoint(100,100));
-    connector->setEndPoint(QPoint(200, -200));
+    connector->setEndPoint(QPoint(-200, 200));
     connector->setType(Connector::Type::dependency);
     connector->setColour(Qt::black);
     scene->addItem(connector);
