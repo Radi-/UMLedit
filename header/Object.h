@@ -13,6 +13,11 @@ private:
 
 protected:
 
+    QScopedPointer<QtPointPropertyManager> pointPropertyManager;
+
+    QtProperty* sizep;
+    QtProperty* size;
+
     QVector<Connector*> startPointConnectors;
     QVector<Connector*> endPointConnectors;
 
@@ -22,8 +27,10 @@ public:
 
     Object();
     virtual ~Object();
+    virtual void setSize(QPoint size);
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
 
+    QRectF boundingRect() const override;
 };
 
 #endif // OBJECT_H

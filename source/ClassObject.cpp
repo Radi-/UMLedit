@@ -66,7 +66,7 @@ void ClassObject::setSize(QPoint size){
     //enforce minimum size of the element so that all text fits inside it
     if(size.y() < bottomLineY) size.setY(bottomLineY);
     if(size.x() < edgeLineX) size.setX(edgeLineX);
-    Element::setSize(size);
+    Object::setSize(size);
 }
 
 void ClassObject::updateDrawingParameters(){

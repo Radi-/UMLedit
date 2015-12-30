@@ -41,8 +41,10 @@ Element::Element(){
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
 
-    size = pointPropertyManager.data()->addProperty("Actual Size");
-    sizep = pointPropertyManager.data()->addProperty("Size");
+    colorPropertyManager.reset(new QtColorPropertyManager(this));
+
+    setFlags(ItemIsSelectable | ItemIsMovable);
+    setAcceptHoverEvents(true);
     colour = colorPropertyManager.data()->addProperty("Colour");
     elementGroup = groupPropertyManager.data()->addProperty("Element");
 
@@ -77,21 +79,7 @@ void Element::updateDrawingParameters(){
 
 }
 
-void Element::setSize(QPoint size){
-
-    if( pointPropertyManager->value(this->size).x() != size.x() ||  pointPropertyManager->value(this->size).y() != size.y()){
-        prepareGeometryChange();
-        pointPropertyManager->setValue(this->size, size);
-        update();
-    }
-}
-
 void Element::setColour(QColor colour){
 
     colorPropertyManager->setValue(this->colour, colour);
-}
-
-QRectF Element::boundingRect() const{
-
-    return QRectF(0, 0, pointPropertyManager->value(this->size).x(), pointPropertyManager->value(this->size).y());
 }

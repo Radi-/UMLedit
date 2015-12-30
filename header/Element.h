@@ -27,15 +27,12 @@ protected:
 
     QScopedPointer<QtGroupPropertyManager> groupPropertyManager;
     QScopedPointer<QtColorPropertyManager> colorPropertyManager;
-    QScopedPointer<QtPointPropertyManager> pointPropertyManager;
 
     QScopedPointer<QtSpinBoxFactory> spinBoxFactory;
     QScopedPointer<QtColorEditorFactory> colorFactory;
 
     QtProperty* elementGroup;
-    QtProperty* sizep;
     QtProperty* colour;
-    QtProperty* size;
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
@@ -47,10 +44,7 @@ public:
     virtual ~Element();
 
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
-    virtual void setSize(QPoint size);
     void setColour(QColor colour);
-
-    QRectF boundingRect() const override;
 
 };
 #endif // ELEMENT_H

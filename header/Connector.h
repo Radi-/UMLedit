@@ -18,10 +18,18 @@ public:
         dependency
     };
 
+private slots:
+
+    void checkGeometryChange();
+
+signals:
+
+    void endPointChanged();
+
 private:
 
     Type type;
-    QPoint endPoint;
+    QPointF endPoint;
 
     int boundingRectPadding; //arbitrary padding to all sides of the bounding rectangle to account for arrow head symbols
 
@@ -31,7 +39,7 @@ public:
     ~Connector();
 
     void setType(Type type);
-    void setEndPoint(QPoint endPoint);
+    void setEndPoint(QPointF endPoint);
     QtTreePropertyBrowser* getPropertyBrowser() override;
 
     QPainterPath shape() const override;
