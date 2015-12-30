@@ -18,10 +18,6 @@ Q_OBJECT
 
 private:
 
-protected slots:
-    virtual void updateDrawingParameters();
-    virtual void pointPropertyUpdated(QtProperty* property, QPoint size);
-
 protected:
     QScopedPointer<QtTreePropertyBrowser> propertyBrowser;
 

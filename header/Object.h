@@ -11,12 +11,18 @@ Q_OBJECT
 
 private:
 
+protected slots:
+
+    virtual void updateDrawingParameters();
+    virtual void pointPropertyUpdated(QtProperty* property, QPoint size);
+
 protected:
 
     QScopedPointer<QtPointPropertyManager> pointPropertyManager;
 
     QtProperty* sizep;
     QtProperty* size;
+    QtProperty* objectGroup;
 
     QVector<Connector*> startPointConnectors;
     QVector<Connector*> endPointConnectors;

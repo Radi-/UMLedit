@@ -10,6 +10,25 @@
 #include "header/MainWindow.h"
 #include "header/GraphicsScene.h"
 
+void MainWindow::closeEvent(QCloseEvent *event){
+
+    bool ignoreEvent = false;
+
+    while(tabWidget->count() > 0){
+        if(!this->tabCloseRequestedSlot(0)){
+            ignoreEvent = true;
+            break;
+        }
+
+    }
+
+    if(ignoreEvent){
+        event->ignore();
+    }
+    else{
+        event->accept();
+    }
+}
 
 void MainWindow::newActionSlot(){
 
