@@ -27,21 +27,24 @@ void MainWindow::newActionSlot(){
     tabWidget->addTab(view, tr("Project 1"));
 
     //temporary test:
-    QGraphicsItem *item = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
-    item->setPos(QPointF(0, 0));
-    scene->addItem(item);
-    static_cast<CommentObject*>(item)->setColour(QColor(100, 0, 150, 200));
+    CommentObject* commentObject = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
+    commentObject->setPos(QPointF(0, 0));
+    commentObject->setColour(QColor(100, 0, 150, 200));
+    scene->addItem(commentObject);
 
-    item = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
-    item->setPos(QPointF(100, 100));
-    scene->addItem(item);
+    ClassObject* classObject = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
+    classObject->setPos(QPointF(100, 100));
+    scene->addItem(classObject);
 
     Connector* connector = new Connector();
     connector->setPos(QPoint(100,100));
-    connector->setEndPoint(QPoint(-200, 200));
+    connector->setEndPoint(QPoint(200, 200));
     connector->setType(Connector::Type::dependency);
-    connector->setColour(Qt::black);
+    connector->setColour(Qt::black);  
     scene->addItem(connector);
+
+    commentObject->connectConnectorStartPoint(connector);
+    classObject->connectConnectorEndPoint(connector);
 
 }
 

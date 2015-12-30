@@ -4,7 +4,7 @@
 void Object::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
 
     //TODO: move connector start- and endpoints
-    //event->pos();
+    event->pos();
     Element::mouseMoveEvent(event);
 }
 
@@ -24,6 +24,42 @@ void Object::setSize(QPoint size){
         prepareGeometryChange();
         pointPropertyManager->setValue(this->size, size);
         update();
+    }
+}
+
+void Object::connectConnectorStartPoint(Connector* connector){
+
+    for(int i = 0; i < startPointConnectors.size(); i++){
+        if(startPointConnectors.at(i) == connector) return;
+    }
+    startPointConnectors.push_back(connector);
+}
+
+void Object::disconnectConnectorStartPoint(Connector* connector){
+
+    for(int i = 0; i < startPointConnectors.size(); i++){
+        if(startPointConnectors.at(i) == connector){
+            startPointConnectors.removeAt(i);
+            break;
+        }
+    }
+}
+
+void Object::connectConnectorEndPoint(Connector* connector){
+
+    for(int i = 0; i < startPointConnectors.size(); i++){
+        if(startPointConnectors.at(i) == connector) return;
+    }
+    startPointConnectors.push_back(connector);
+}
+
+void Object::disconnectConnectorEndPoint(Connector* connector){
+
+    for(int i = 0; i < startPointConnectors.size(); i++){
+        if(startPointConnectors.at(i) == connector){
+            startPointConnectors.removeAt(i);
+            break;
+        }
     }
 }
 

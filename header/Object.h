@@ -27,8 +27,14 @@ public:
 
     Object();
     virtual ~Object();
+
     virtual void setSize(QPoint size);
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
+
+    void connectConnectorStartPoint(Connector* connector);
+    void disconnectConnectorStartPoint(Connector* connector);
+    void connectConnectorEndPoint(Connector* connector);
+    void disconnectConnectorEndPoint(Connector* connector);
 
     QRectF boundingRect() const override;
 };
