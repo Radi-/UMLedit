@@ -20,7 +20,7 @@ void Connector::setEndPoint(QPoint endPoint){
 }
 
 QtTreePropertyBrowser* Connector::getPropertyBrowser(){
-    return propertyBrowser;
+    return propertyBrowser.data();
 }
 
 QPainterPath Connector::shape() const{

@@ -25,8 +25,9 @@ void Element::mouseReleaseEvent(QGraphicsSceneMouseEvent* event){
 
 Element::Element(){
 
-    colorPropertyManager = new QtColorPropertyManager(this);
-    pointPropertyManager = new QtPointPropertyManager(this);
+    propertyBrowser.reset(new QtTreePropertyBrowser());
+    colorPropertyManager.reset(new QtColorPropertyManager(this));
+    pointPropertyManager.reset(new QtPointPropertyManager(this));
 
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);

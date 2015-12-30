@@ -6,9 +6,9 @@ ClassObject::ClassObject(){
 
 ClassObject::ClassObject(QPoint size, QColor colour){
 
-    groupPropertyManager = new QtGroupPropertyManager(this);
-    stringPropertyManager = new QtStringPropertyManager(this);
-    fontPropertyManager = new QtFontPropertyManager(this);
+    groupPropertyManager.reset(new QtGroupPropertyManager(this));
+    stringPropertyManager.reset(new QtStringPropertyManager(this));
+    fontPropertyManager.reset(new QtFontPropertyManager(this));
 
     nameFont = fontPropertyManager.data()->addProperty("Name");
     textFont = fontPropertyManager.data()->addProperty("Attributes and methods");
@@ -24,12 +24,11 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     classGroup->addSubProperty(sizep);
     classGroup->addSubProperty(fontGroup);
 
-    spinBoxFactory = new QtSpinBoxFactory();
-    lineEditFactory = new QtLineEditFactory();
-    colorFactory = new QtColorEditorFactory();
-    fontFactory = new QtFontEditorFactory();
+    spinBoxFactory.reset(new QtSpinBoxFactory());
+    lineEditFactory.reset(new QtLineEditFactory());
+    colorFactory.reset(new QtColorEditorFactory());
+    fontFactory.reset(new QtFontEditorFactory());
 
-    propertyBrowser = new QtTreePropertyBrowser();
     propertyBrowser.data()->setFactoryForManager(stringPropertyManager.data(), lineEditFactory.data());
     propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data(), colorFactory.data());
     propertyBrowser.data()->setFactoryForManager(pointPropertyManager.data()->subIntPropertyManager(), spinBoxFactory.data());
@@ -150,5 +149,5 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
 }
 
 QtTreePropertyBrowser* ClassObject::getPropertyBrowser(){
-    return propertyBrowser;
+    return propertyBrowser.data();
 }
