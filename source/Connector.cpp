@@ -1,9 +1,17 @@
 
 #include "header/Connector.h"
 
+void Connector::checkGeometryChange(){
+
+    prepareGeometryChange();
+}
+
 Connector::Connector(){
 
     boundingRectPadding = 50;
+    connect(this, SIGNAL(xChanged()), this, SLOT(checkGeometryChange()));
+    connect(this, SIGNAL(yChanged()), this, SLOT(checkGeometryChange()));
+    connect(this, SIGNAL(endPointChanged()), this, SLOT(checkGeometryChange()));
 }
 
 Connector::~Connector(){
@@ -14,10 +22,11 @@ void Connector::setType(Type type){
     this->type = type;
 }
 
-void Connector::setEndPoint(QPoint endPoint){
+void Connector::setEndPoint(QPointF endPoint){
 
-    prepareGeometryChange();
     this->endPoint = endPoint;
+    prepareGeometryChange();
+    emit endPointChanged();
 }
 
 QtTreePropertyBrowser* Connector::getPropertyBrowser(){
@@ -56,5 +65,7 @@ QRectF Connector::boundingRect() const{
         if(vector.y() > 0) return QRectF(vector.x() - boundingRectPadding, -boundingRectPadding, -vector.x() + boundingRectPadding, vector.y() + boundingRectPadding);
         return QRectF(vector.x() - boundingRectPadding, vector.y() - boundingRectPadding, -vector.x() + boundingRectPadding, -vector.y() + boundingRectPadding);
     }
+    return QRectF();
 }
+
 
