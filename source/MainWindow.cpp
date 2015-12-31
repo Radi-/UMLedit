@@ -62,8 +62,8 @@ void MainWindow::newActionSlot(){
     connector->setColour(Qt::black);  
     scene->addItem(connector);
 
-    commentObject->connectConnectorStartPoint(connector);
-    classObject->connectConnectorEndPoint(connector);
+    commentObject->connectConnectorStartPoint(Connection(connector, QPointF(10, 10)));
+    classObject->connectConnectorEndPoint(Connection(connector, QPointF(30, 0)));
 
 }
 

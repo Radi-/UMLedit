@@ -25,6 +25,9 @@ void Element::mouseReleaseEvent(QGraphicsSceneMouseEvent* event){
 
 Element::Element(){
 
+    setFlags(ItemIsSelectable);
+    setAcceptHoverEvents(true);
+
     propertyBrowser.reset(new QtTreePropertyBrowser());
 
     groupPropertyManager.reset(new QtGroupPropertyManager());
@@ -36,13 +39,10 @@ Element::Element(){
     propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data(), colorFactory.data());
     propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data()->subIntPropertyManager(), spinBoxFactory.data());
 
-    setFlags(ItemIsSelectable | ItemIsMovable);
-    setAcceptHoverEvents(true);
-
     colorPropertyManager.reset(new QtColorPropertyManager(this));
 
-    setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
+
     colour = colorPropertyManager.data()->addProperty("Colour");
     elementGroup = groupPropertyManager.data()->addProperty("Element");
 

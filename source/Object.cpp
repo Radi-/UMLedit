@@ -3,8 +3,20 @@
 
 void Object::mouseMoveEvent(QGraphicsSceneMouseEvent* event){
 
-    //TODO: move connector start- and endpoints
-    event->pos();
+    //TODO: change implementation as needed when Connector uses node-objects for start- and endpoints
+    //event->pos()
+
+    Connection connection;
+
+    for(int i = 0; i < startPointConnections.size(); i++){
+        connection = startPointConnections.at(i);
+        connection.connector->setPos(pos() + connection.connectionPoint);
+    }
+    for(int i = 0; i < endPointConnections.size(); i++){
+        connection = endPointConnections.at(i);
+        connection.connector->setEndPoint(pos() + connection.connectionPoint);
+    }
+
     Element::mouseMoveEvent(event);
 }
 
@@ -28,6 +40,8 @@ void Object::updateDrawingParameters(){
 }
 
 Object::Object(){
+
+    setFlags(ItemIsSelectable | ItemIsMovable);
 
     pointPropertyManager.reset(new QtPointPropertyManager(this));
 
@@ -56,38 +70,38 @@ void Object::setSize(QPoint size){
     }
 }
 
-void Object::connectConnectorStartPoint(Connector* connector){
+void Object::connectConnectorStartPoint(Connection connection){
 
-    for(int i = 0; i < startPointConnectors.size(); i++){
-        if(startPointConnectors.at(i) == connector) return;
+    for(int i = 0; i < startPointConnections.size(); i++){
+        if(startPointConnections.at(i).connector == connection.connector) return;
     }
-    startPointConnectors.push_back(connector);
+    startPointConnections.push_back(connection);
 }
 
-void Object::disconnectConnectorStartPoint(Connector* connector){
+void Object::disconnectConnectorStartPoint(Connection connection){
 
-    for(int i = 0; i < startPointConnectors.size(); i++){
-        if(startPointConnectors.at(i) == connector){
-            startPointConnectors.removeAt(i);
+    for(int i = 0; i < startPointConnections.size(); i++){
+        if(startPointConnections.at(i).connector == connection.connector){
+            startPointConnections.removeAt(i);
             break;
         }
     }
 }
 
-void Object::connectConnectorEndPoint(Connector* connector){
+void Object::connectConnectorEndPoint(Connection connection){
 
-    for(int i = 0; i < startPointConnectors.size(); i++){
-        if(startPointConnectors.at(i) == connector) return;
+    for(int i = 0; i < endPointConnections.size(); i++){
+        if(endPointConnections.at(i).connector == connection.connector) return;
     }
-    startPointConnectors.push_back(connector);
+    endPointConnections.push_back(connection);
 }
 
-void Object::disconnectConnectorEndPoint(Connector* connector){
+void Object::disconnectConnectorEndPoint(Connection connection){
 
-    for(int i = 0; i < startPointConnectors.size(); i++){
-        if(startPointConnectors.at(i) == connector){
-            startPointConnectors.removeAt(i);
-            break;
+    for(int i = 0; i < endPointConnections.size(); i++){
+        if(endPointConnections.at(i).connector == connection.connector){
+            endPointConnections.removeAt(i);
+            return;
         }
     }
 }

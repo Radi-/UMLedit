@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "header/Connector.h"
+#include "header/Connection.h"
 #include "header/Element.h"
 
 class Object : public Element
@@ -24,8 +24,8 @@ protected:
     QtProperty* size;
     QtProperty* objectGroup;
 
-    QVector<Connector*> startPointConnectors;
-    QVector<Connector*> endPointConnectors;
+    QVector<Connection> startPointConnections;
+    QVector<Connection> endPointConnections;
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
 
@@ -37,10 +37,10 @@ public:
     virtual void setSize(QPoint size);
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
 
-    void connectConnectorStartPoint(Connector* connector);
-    void disconnectConnectorStartPoint(Connector* connector);
-    void connectConnectorEndPoint(Connector* connector);
-    void disconnectConnectorEndPoint(Connector* connector);
+    void connectConnectorStartPoint(Connection connection);
+    void disconnectConnectorStartPoint(Connection connection);
+    void connectConnectorEndPoint(Connection connection);
+    void disconnectConnectorEndPoint(Connection connection);
 
     QRectF boundingRect() const override;
 };

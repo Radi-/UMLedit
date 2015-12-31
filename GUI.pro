@@ -18,7 +18,8 @@ SOURCES += \
     source/ClassObject.cpp \
     source/GraphicsView.cpp \
     source/Object.cpp \
-    source/GraphicsScene.cpp
+    source/GraphicsScene.cpp \
+    source/Connection.cpp
 
 HEADERS += \
     header/MainWindow.h \
@@ -28,7 +29,8 @@ HEADERS += \
     header/ClassObject.h \
     header/GraphicsView.h \
     header/Object.h \
-    header/GraphicsScene.h
+    header/GraphicsScene.h \
+    header/Connection.h
 
 RESOURCES += \
     resource/images.qrc
