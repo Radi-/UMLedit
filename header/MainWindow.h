@@ -86,6 +86,11 @@ private:
     QtTreePropertyBrowser* propertyBrowser;
 
     void connectSignals();
+    void createMenus();
+    void createActions();
+    void createDockWidgets();
+    void initTabWidget();
+
 
 public slots:
     void updateStatusBarCoordinates(qreal x, qreal y);

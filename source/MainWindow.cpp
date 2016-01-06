@@ -6,6 +6,7 @@
 #include <QIcon>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QKeySequence>
 
 #include "header/MainWindow.h"
 #include "header/GraphicsScene.h"
@@ -65,6 +66,8 @@ void MainWindow::newActionSlot(){
     commentObject->connectConnectorStartPoint(Connection(connector, QPointF(10, 10)));
     classObject->connectConnectorEndPoint(Connection(connector, QPointF(30, 0)));
 
+    if (!saveAction->isEnabled()) saveAction->setEnabled(true);
+    if (!saveAsAction->isEnabled()) saveAsAction->setEnabled(true);
 }
 
 void MainWindow::openActionSlot(){
@@ -75,12 +78,13 @@ void MainWindow::openActionSlot(){
 
 void MainWindow::saveActionSlot(){
 
-    GraphicsView* view = (GraphicsView*)tabWidget->currentWidget();
+    GraphicsView* view = static_cast<GraphicsView*>(tabWidget->currentWidget());
     view->saveFile();
 }
 
 void MainWindow::saveAsActionSlot(){
-
+    GraphicsView* view = static_cast<GraphicsView*>(tabWidget->currentWidget());
+    view->saveFileAs();
 }
 
 void MainWindow::undoActionSlot(){
@@ -101,23 +105,6 @@ void MainWindow::copyActionSlot(){
 
 void MainWindow::pasteActionSlot(){
     //TBI in production version
-}
-
-void MainWindow::connectSignals(){
-
-    connect(newAction, SIGNAL(triggered()), this, SLOT(newActionSlot()));
-    connect(openAction, SIGNAL(triggered()), this, SLOT(openActionSlot()));
-    connect(saveAction, SIGNAL(triggered()), this, SLOT(saveActionSlot()));
-    connect(saveAsAction, SIGNAL(triggered()), this, SLOT(saveActionSlot()));
-    connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
-    connect(undoAction, SIGNAL(triggered()), this, SLOT(undoActionSlot()));
-    connect(redoAction, SIGNAL(triggered()), this, SLOT(redoActionSlot()));
-    connect(cutAction, SIGNAL(triggered()), this, SLOT(cutActionSlot()));
-    connect(copyAction, SIGNAL(triggered()), this, SLOT(copyActionSlot()));
-    connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteActionSlot()));
-
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
-
 }
 
 bool MainWindow::tabCloseRequestedSlot(int index){
@@ -143,6 +130,11 @@ bool MainWindow::tabCloseRequestedSlot(int index){
     if(tabWidget->count() > 0){
         setPropertyBrowser();
     }
+    else {
+        saveAction->setEnabled(false);
+        saveAsAction->setEnabled(false);
+    }
+
     return true;
 }
 
@@ -163,46 +155,98 @@ void MainWindow::setPropertyBrowser(){
     }
 }
 
-void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
+void MainWindow::connectSignals(){
 
-    coordinatesLabel->setText(QString("(%1,%2)").arg(x).arg(y));
+    connect(newAction, &QAction::triggered, this, &MainWindow::newActionSlot);
+    connect(openAction, &QAction::triggered, this, &MainWindow::openActionSlot);
+    connect(saveAction, &QAction::triggered, this, &MainWindow::saveActionSlot);
+    connect(saveAsAction, &QAction::triggered, this, &MainWindow::saveAsActionSlot);
+    connect(exitAction, &QAction::triggered, this, &MainWindow::close);
+    connect(undoAction, &QAction::triggered, this, &MainWindow::undoActionSlot);
+    connect(redoAction, &QAction::triggered, this, &MainWindow::redoActionSlot);
+    connect(cutAction, &QAction::triggered, this, &MainWindow::cutActionSlot);
+    connect(copyAction, &QAction::triggered, this, &MainWindow::copyActionSlot);
+    connect(pasteAction, &QAction::triggered, this, &MainWindow::pasteActionSlot);
+
+    //connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
+    connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabCloseRequestedSlot);
+
 }
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
+void MainWindow::createMenus(){
 
-    this->setWindowTitle("UMLedit");
-
-    //instantiate elements and set properties:
-
-    //statusBar
-    statusBar = new QStatusBar(this);
-    coordinatesLabel = new QLabel(statusBar);
-    setStatusBar(statusBar);
-
-    //toolBar
-    fileToolBar = new QToolBar(this);
-    editToolBar = new QToolBar(this);
-
-    //menuBar
     menuBar = new QMenuBar(this);
+
     fileMenu = new QMenu(menuBar);
     fileMenu->setTitle(tr("File"));
     editMenu = new QMenu(menuBar);
     editMenu->setTitle(tr("Edit"));
 
-    //menuBar/fileMenu
-    newAction = new QAction(QIcon::fromTheme("document-new"), tr("New"), fileMenu);
-    openAction = new QAction(QIcon::fromTheme("document-open"), tr("Open"), fileMenu);
-    saveAction = new QAction(QIcon::fromTheme("document-save"), tr("Save"), fileMenu);
-    saveAsAction = new QAction(QIcon::fromTheme("document-save-as"), tr("Save As..."), fileMenu);
-    exitAction = new QAction(QIcon::fromTheme("application-exit"), tr("Exit"), fileMenu);
+    burgerMenu = new QMenu(this);
+    burgerMenu->addMenu(fileMenu);
+    burgerMenu->addMenu(editMenu);
+    menuButton->setMenu(burgerMenu);
 
-    //menuBar/editMenu
-    undoAction = new QAction(QIcon::fromTheme("edit-undo"), tr("Undo"), editMenu);
-    redoAction = new QAction(QIcon::fromTheme("edit-redo"), tr("Redo"), editMenu);
-    cutAction = new QAction(QIcon::fromTheme("edit-cut"), tr("Cut"), editMenu);
-    copyAction = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy"), editMenu);
-    pasteAction = new QAction(QIcon::fromTheme("edit-paste"), tr("Paste"), editMenu);
+    //Add fileMenu actions
+    menuBar->addMenu(fileMenu);
+    fileMenu->addAction(newAction);
+    fileMenu->addAction(openAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(saveAction);
+    fileMenu->addAction(saveAsAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(exitAction);
+
+    //Add editMenu actions
+    menuBar->addMenu(editMenu);
+    editMenu->addAction(undoAction);
+    editMenu->addAction(redoAction);
+    editMenu->addSeparator();
+    editMenu->addAction(cutAction);
+    editMenu->addAction(copyAction);
+    editMenu->addAction(pasteAction);
+
+    fileToolBar->addAction(newAction);
+    fileToolBar->addAction(openAction);
+    fileToolBar->addAction(saveAction);
+    fileToolBar->addAction(saveAsAction);
+
+    editToolBar->addAction(undoAction);
+    editToolBar->addAction(redoAction);
+    editToolBar->addSeparator();
+    editToolBar->addAction(cutAction);
+    editToolBar->addAction(copyAction);
+    editToolBar->addAction(pasteAction);
+}
+
+void MainWindow::createActions(){
+
+    //fileMenu actions
+    newAction = new QAction(QIcon::fromTheme("document-new"), tr("New"), this);
+    newAction->setShortcut(QKeySequence::New);
+    openAction = new QAction(QIcon::fromTheme("document-open"), tr("Open"), this);
+    openAction->setShortcut(QKeySequence::Open);
+    saveAction = new QAction(QIcon::fromTheme("document-save"), tr("Save"), this);
+    saveAction->setShortcut(QKeySequence::Save);
+    saveAsAction = new QAction(QIcon::fromTheme("document-save-as"), tr("Save As..."), this);
+    saveAsAction->setShortcut(QKeySequence::SaveAs);
+    exitAction = new QAction(QIcon::fromTheme("application-exit"), tr("Exit"), this);
+    exitAction->setShortcut(QKeySequence::Quit);
+
+    //editMenu actions
+    undoAction = new QAction(QIcon::fromTheme("edit-undo"), tr("Undo"), this);
+    undoAction->setShortcut(QKeySequence::Undo);
+    redoAction = new QAction(QIcon::fromTheme("edit-redo"), tr("Redo"), this);
+    redoAction->setShortcut(QKeySequence::Redo);
+    cutAction = new QAction(QIcon::fromTheme("edit-cut"), tr("Cut"), this);
+    cutAction->setShortcut(QKeySequence::Cut);
+    copyAction = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy"), this);
+    copyAction->setShortcut(QKeySequence::Copy);
+    pasteAction = new QAction(QIcon::fromTheme("edit-paste"), tr("Paste"), this);
+    pasteAction->setShortcut(QKeySequence::Paste);
+}
+
+void MainWindow::initTabWidget(){
 
     //Create the tab widget which displays the projects:
     tabWidget = new QTabWidget(this);
@@ -226,6 +270,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     menuButton->setFlat(true);
 
     tabWidget->removeTab(0);
+    delete randWidget;
+
+    tabWidget->setContentsMargins(0,0,0,0);
+}
+
+void MainWindow::createDockWidgets(){
 
     //dockable windows:
     objectWindow = new QDockWidget(this);
@@ -243,7 +293,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     addDockWidget(Qt::RightDockWidgetArea, historyWindow);
     addDockWidget(Qt::RightDockWidgetArea, propertyWindow);
     tabifyDockWidget(objectWindow, connectorWindow);
-
 
     objectList = new QListWidget(objectWindow);
     objectList->setUniformItemSizes(true);
@@ -271,53 +320,44 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     propertyWindow->setContentsMargins(0,0,0,0);
 
-    //assign elements:
-
-    //menuBar/fileMenu
-    menuBar->addMenu(fileMenu);
-    fileMenu->addAction(newAction);
-    fileMenu->addAction(openAction);
-    fileMenu->addSeparator();
-    fileMenu->addAction(saveAction);
-    fileMenu->addAction(saveAsAction);
-    fileMenu->addSeparator();
-    fileMenu->addAction(exitAction);
-
-    //menuBar/editMenu
-    menuBar->addMenu(editMenu);
-    editMenu->addAction(undoAction);
-    editMenu->addAction(redoAction);
-    editMenu->addSeparator();
-    editMenu->addAction(cutAction);
-    editMenu->addAction(copyAction);
-    editMenu->addAction(pasteAction);
-
-    fileToolBar->addAction(newAction);
-    fileToolBar->addAction(openAction);
-    fileToolBar->addAction(saveAction);
-    fileToolBar->addAction(saveAsAction);
-
-    editToolBar->addAction(undoAction);
-    editToolBar->addAction(redoAction);
-    editToolBar->addSeparator();
-    editToolBar->addAction(cutAction);
-    editToolBar->addAction(copyAction);
-    editToolBar->addAction(pasteAction);
-
-    burgerMenu = new QMenu(this);
-    burgerMenu->addMenu(fileMenu);
-    burgerMenu->addMenu(editMenu);
-    menuButton->setMenu(burgerMenu);
-
     selectionLabel = new QLabel(propertyWindow);
     selectionLabel->setText(tr("No item(s) selected."));
     propertyWindow->setWidget(selectionLabel);
-    //drawer menu mode:
+}
+
+void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
+
+    coordinatesLabel->setText(QString("(%1,%2)").arg(x).arg(y));
+}
+
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
+
+    this->setWindowTitle("UMLedit");
+
+    //instantiate elements and set properties:
+
+    //statusBar
+    statusBar = new QStatusBar(this);
+    coordinatesLabel = new QLabel(statusBar);
+    setStatusBar(statusBar);
+
+    //toolBar
+    fileToolBar = new QToolBar(this);
+    editToolBar = new QToolBar(this);   
+
+    initTabWidget();
+    createActions();
+    createMenus();
+    createDockWidgets();
+
+    //Set created widgets to mainwindow:
     setMenuBar(menuBar);
     addToolBar(fileToolBar);
     addToolBar(editToolBar);
     setCentralWidget(tabWidget);
-    tabWidget->setContentsMargins(0,0,0,0);
+
+    saveAction->setEnabled(false);
+    saveAsAction->setEnabled(false);
     connectSignals();
     this->showMaximized();
 

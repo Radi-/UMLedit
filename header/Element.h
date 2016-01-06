@@ -19,7 +19,7 @@ Q_OBJECT
 private:
 
 protected:
-    QScopedPointer<QtTreePropertyBrowser> propertyBrowser;
+    QPointer<QtTreePropertyBrowser> propertyBrowser;
 
     QScopedPointer<QtGroupPropertyManager> groupPropertyManager;
     QScopedPointer<QtColorPropertyManager> colorPropertyManager;
