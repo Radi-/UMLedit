@@ -33,6 +33,8 @@ void MainWindow::closeEvent(QCloseEvent *event){
 
 void MainWindow::newActionSlot(){
 
+    newProjectCount++;
+
     GraphicsView* view = new GraphicsView(this);
     view->setFrameStyle(QFrame::NoFrame);
     view->setMouseTracking(true);
@@ -44,7 +46,9 @@ void MainWindow::newActionSlot(){
     connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateStatusBarCoordinates(qreal,qreal)));
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(setPropertyBrowser()));
     view->setScene(scene);
-    tabWidget->addTab(view, tr("Project 1"));
+
+    tabWidget->addTab(view, tr("Project %1").arg(newProjectCount));
+    tabWidget->setCurrentIndex(tabWidget->count()-1);
 
     //temporary test:
     CommentObject* commentObject = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
@@ -107,6 +111,26 @@ void MainWindow::pasteActionSlot(){
     //TBI in production version
 }
 
+void MainWindow::showObjectDockActionSlot(bool checked){
+
+    objectWindow->setVisible(checked);
+}
+
+void MainWindow::showConnectorDockActionSlot(bool checked){
+
+    connectorWindow->setVisible(checked);
+}
+
+void MainWindow::showHistoryDockActionSlot(bool checked){
+
+    historyWindow->setVisible(checked);
+}
+
+void MainWindow::showPropertyDockActionSlot(bool checked){
+
+    propertyWindow->setVisible(checked);
+}
+
 bool MainWindow::tabCloseRequestedSlot(int index){
     GraphicsView* view = (GraphicsView*)tabWidget->widget(index);
     if (view->hasChanged()){
@@ -167,8 +191,12 @@ void MainWindow::connectSignals(){
     connect(cutAction, &QAction::triggered, this, &MainWindow::cutActionSlot);
     connect(copyAction, &QAction::triggered, this, &MainWindow::copyActionSlot);
     connect(pasteAction, &QAction::triggered, this, &MainWindow::pasteActionSlot);
+    connect(showObjectDockAction, &QAction::toggled, this, &MainWindow::showObjectDockActionSlot);
+    connect(showConnectorDockAction, &QAction::toggled, this, &MainWindow::showConnectorDockActionSlot);
+    connect(showHistoryDockAction, &QAction::toggled, this, &MainWindow::showHistoryDockActionSlot);
+    connect(showPropertyDockAction, &QAction::toggled, this, &MainWindow::showPropertyDockActionSlot);
+    connect(aboutQtAction, &QAction::triggered, this, &QApplication::aboutQt);
 
-    //connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabCloseRequestedSlot);
 
 }
@@ -181,10 +209,20 @@ void MainWindow::createMenus(){
     fileMenu->setTitle(tr("File"));
     editMenu = new QMenu(menuBar);
     editMenu->setTitle(tr("Edit"));
+    toolsMenu = new QMenu(menuBar);
+    toolsMenu->setTitle(tr("Tools"));
+    viewMenu = new QMenu(menuBar);
+    viewMenu->setTitle(tr("View"));
+    helpMenu = new QMenu(menuBar);
+    helpMenu->setTitle(tr("Help"));
 
     burgerMenu = new QMenu(this);
     burgerMenu->addMenu(fileMenu);
     burgerMenu->addMenu(editMenu);
+    burgerMenu->addMenu(toolsMenu);
+    burgerMenu->addMenu(viewMenu);
+    burgerMenu->addMenu(helpMenu);
+
     menuButton->setMenu(burgerMenu);
 
     //Add fileMenu actions
@@ -194,6 +232,8 @@ void MainWindow::createMenus(){
     fileMenu->addSeparator();
     fileMenu->addAction(saveAction);
     fileMenu->addAction(saveAsAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(exportAction);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
 
@@ -205,6 +245,45 @@ void MainWindow::createMenus(){
     editMenu->addAction(cutAction);
     editMenu->addAction(copyAction);
     editMenu->addAction(pasteAction);
+    editMenu->addSeparator();
+    editMenu->addAction(selectAllAction);
+    editMenu->addAction(selectNoneAction);
+
+    //Add toolsMenu actions
+    menuBar->addMenu(toolsMenu);
+    toolsMenu->addAction(arrangeGraphAction);
+    toolsMenu->addSeparator();
+    toolsMenu->addAction(settingsAction);
+
+    //Add viewMenu actions
+    menuBar->addMenu(viewMenu);
+    viewMenu->addAction(zoomInAction);
+    viewMenu->addAction(zoomOutAction);
+    viewMenu->addAction(zoomResetAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(showObjectDockAction);
+    viewMenu->addAction(showConnectorDockAction);
+    viewMenu->addAction(showHistoryDockAction);
+    viewMenu->addAction(showPropertyDockAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(showGridAction);
+    viewMenu->addAction(gridSnapAction);
+
+
+    //Add helpMenu actions
+    menuBar->addMenu(helpMenu);
+    helpMenu->addAction(helpContentsAction);
+    helpMenu->addSeparator();
+    helpMenu->addAction(aboutQtAction);
+    helpMenu->addAction(aboutAction);
+
+}
+
+void MainWindow::createToolBars(){
+
+    fileToolBar = new QToolBar(this);
+    editToolBar = new QToolBar(this);
+    viewToolBar = new QToolBar(this);
 
     fileToolBar->addAction(newAction);
     fileToolBar->addAction(openAction);
@@ -217,6 +296,10 @@ void MainWindow::createMenus(){
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
+
+    viewToolBar->addAction(zoomInAction);
+    viewToolBar->addAction(zoomOutAction);
+    viewToolBar->addAction(zoomResetAction);
 }
 
 void MainWindow::createActions(){
@@ -224,26 +307,91 @@ void MainWindow::createActions(){
     //fileMenu actions
     newAction = new QAction(QIcon::fromTheme("document-new"), tr("New"), this);
     newAction->setShortcut(QKeySequence::New);
+    newAction->setStatusTip(tr("Create new project"));
     openAction = new QAction(QIcon::fromTheme("document-open"), tr("Open"), this);
     openAction->setShortcut(QKeySequence::Open);
+    openAction->setStatusTip(tr("Open an existing project"));
     saveAction = new QAction(QIcon::fromTheme("document-save"), tr("Save"), this);
     saveAction->setShortcut(QKeySequence::Save);
+    saveAction->setStatusTip(tr("Save project"));
     saveAsAction = new QAction(QIcon::fromTheme("document-save-as"), tr("Save As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
+    saveAsAction->setStatusTip(tr("Save project to another location"));
+    exportAction = new QAction(tr("Export"), this);
+    exportAction->setStatusTip(tr("Export project to another format"));
     exitAction = new QAction(QIcon::fromTheme("application-exit"), tr("Exit"), this);
     exitAction->setShortcut(QKeySequence::Quit);
+    exitAction->setStatusTip(tr("Exit the application"));
 
     //editMenu actions
     undoAction = new QAction(QIcon::fromTheme("edit-undo"), tr("Undo"), this);
     undoAction->setShortcut(QKeySequence::Undo);
+    undoAction->setStatusTip(tr("Undo an action"));
     redoAction = new QAction(QIcon::fromTheme("edit-redo"), tr("Redo"), this);
     redoAction->setShortcut(QKeySequence::Redo);
+    redoAction->setStatusTip(tr("Redo an undoed action"));
     cutAction = new QAction(QIcon::fromTheme("edit-cut"), tr("Cut"), this);
     cutAction->setShortcut(QKeySequence::Cut);
+    cutAction->setStatusTip(tr("Cut object(s)"));
     copyAction = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy"), this);
     copyAction->setShortcut(QKeySequence::Copy);
+    copyAction->setStatusTip(tr("Copy object(s)"));
     pasteAction = new QAction(QIcon::fromTheme("edit-paste"), tr("Paste"), this);
     pasteAction->setShortcut(QKeySequence::Paste);
+    pasteAction->setStatusTip(tr("Paste object(s)"));
+    selectAllAction = new QAction(QIcon::fromTheme("edit-select-all"), tr("Select All"), this);
+    selectAllAction->setShortcut(QKeySequence::SelectAll);
+    selectAllAction->setStatusTip(tr("Select everything from a project"));
+    selectNoneAction = new QAction(tr("Select None"), this);
+    selectNoneAction->setStatusTip(tr("Make every item unselected"));
+
+    //toolsMenu actions
+    settingsAction = new QAction(tr("Settings"), this);
+    settingsAction->setStatusTip(tr("Settings"));
+    arrangeGraphAction = new QAction(tr("Arrange Graph"), this);
+    arrangeGraphAction->setStatusTip("Arrange your project's items to a certain order");
+
+    //viewMenu actions
+    zoomInAction = new QAction(QIcon::fromTheme("zoom-in"), tr("Zoom In"), this);
+    zoomInAction->setShortcut(QKeySequence::ZoomIn);
+    zoomInAction->setStatusTip(tr("Zoom in"));
+    zoomOutAction = new QAction(QIcon::fromTheme("zoom-out"), tr("Zoom Out"), this);
+    zoomOutAction->setShortcut(QKeySequence::ZoomOut);
+    zoomOutAction->setStatusTip(tr("Zoom out"));
+    zoomResetAction = new QAction(QIcon::fromTheme("zoom-original"), tr("Reset Zoom"), this);
+    zoomResetAction->setStatusTip(tr("Reset zoom to 100%"));
+    showObjectDockAction = new QAction(tr("Show Objects Window"), this);
+    showObjectDockAction->setStatusTip(tr("Show/hide objects window"));
+    showObjectDockAction->setCheckable(true);
+    showObjectDockAction->setChecked(true);
+    showConnectorDockAction = new QAction(tr("Show Connectors Window"), this);
+    showConnectorDockAction->setStatusTip(tr("Show/hide connectors window"));
+    showConnectorDockAction->setCheckable(true);
+    showConnectorDockAction->setChecked(true);
+    showHistoryDockAction = new QAction(tr("Show History Window"), this);
+    showHistoryDockAction->setStatusTip(tr("Show/hide undo history window"));
+    showHistoryDockAction->setCheckable(true);
+    showHistoryDockAction->setChecked(true);
+    showPropertyDockAction  = new QAction(tr("Show Properties Window"), this);
+    showPropertyDockAction->setStatusTip(tr("Show/hide properties window"));
+    showPropertyDockAction->setCheckable(true);
+    showPropertyDockAction->setChecked(true);
+    showGridAction = new QAction(tr("Show Grid"), this);
+    showGridAction->setStatusTip(tr("Show/hide grid in the project"));
+    showGridAction->setCheckable(true);
+    gridSnapAction = new QAction(tr("Grid Snap"), this);
+    gridSnapAction->setStatusTip(tr("Enable/disable grid snap"));
+    gridSnapAction->setCheckable(true);
+
+    //helpMenu actions
+    helpContentsAction = new QAction(QIcon::fromTheme("help-contents"), tr("Help Contents"), this);
+    helpContentsAction->setShortcut(QKeySequence::HelpContents);
+    helpContentsAction->setStatusTip(tr("Show help document"));
+    aboutQtAction = new QAction(tr("About Qt"), this);
+    aboutQtAction->setStatusTip(tr("View information about Qt"));
+    aboutAction = new QAction(QIcon::fromTheme("help-about"), tr("About"), this);
+    aboutAction->setStatusTip(tr("View information about UMLEdit"));
+
 }
 
 void MainWindow::initTabWidget(){
@@ -255,9 +403,9 @@ void MainWindow::initTabWidget(){
 
     //Menu button for the alternative mode when menubar is hidden
     menuButton = new QPushButton(tabWidget);
-    //menuButton->setText(tr("Menu"));
     menuButton->setIcon(QIcon(":/image/menu_icon.svg"));
-    tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
+    menuButton->hide();
+    //tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
 
     /*Horrible hack or, as some may say, a temporary workaround
     Basically set fixed height for menubutton by creating a temporary tab
@@ -319,7 +467,6 @@ void MainWindow::createDockWidgets(){
     historyWindow->setContentsMargins(0,0,0,0);
 
     propertyWindow->setContentsMargins(0,0,0,0);
-
     selectionLabel = new QLabel(propertyWindow);
     selectionLabel->setText(tr("No item(s) selected."));
     propertyWindow->setWidget(selectionLabel);
@@ -334,26 +481,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     this->setWindowTitle("UMLedit");
 
-    //instantiate elements and set properties:
+    newProjectCount = 0;
 
-    //statusBar
     statusBar = new QStatusBar(this);
     coordinatesLabel = new QLabel(statusBar);
-    setStatusBar(statusBar);
-
-    //toolBar
-    fileToolBar = new QToolBar(this);
-    editToolBar = new QToolBar(this);   
+    statusBar->addWidget(coordinatesLabel);
 
     initTabWidget();
     createActions();
     createMenus();
+    createToolBars();
     createDockWidgets();
 
     //Set created widgets to mainwindow:
     setMenuBar(menuBar);
+    setStatusBar(statusBar);
     addToolBar(fileToolBar);
     addToolBar(editToolBar);
+    addToolBar(viewToolBar);
     setCentralWidget(tabWidget);
 
     saveAction->setEnabled(false);
