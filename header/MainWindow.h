@@ -21,6 +21,7 @@
 #include "header/ClassObject.h"
 #include "header/Connector.h"
 #include "header/GraphicsView.h"
+#include "header/SettingsWindow.h"
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +41,7 @@ private slots:
     void cutActionSlot();
     void copyActionSlot();
     void pasteActionSlot();
+    void settingsActionSlot();
     void showObjectDockActionSlot(bool checked);
     void showConnectorDockActionSlot(bool checked);
     void showHistoryDockActionSlot(bool checked);
@@ -111,6 +113,8 @@ private:
     QListWidget* connectorList;
     QUndoView* historyView;
     QtTreePropertyBrowser* propertyBrowser;
+
+    SettingsWindow* settings;
 
     void connectSignals();
     void createMenus();

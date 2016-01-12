@@ -111,6 +111,11 @@ void MainWindow::pasteActionSlot(){
     //TBI in production version
 }
 
+void MainWindow::settingsActionSlot(){
+
+    settings->show();
+}
+
 void MainWindow::showObjectDockActionSlot(bool checked){
 
     objectWindow->setVisible(checked);
@@ -191,6 +196,7 @@ void MainWindow::connectSignals(){
     connect(cutAction, &QAction::triggered, this, &MainWindow::cutActionSlot);
     connect(copyAction, &QAction::triggered, this, &MainWindow::copyActionSlot);
     connect(pasteAction, &QAction::triggered, this, &MainWindow::pasteActionSlot);
+    connect(settingsAction, &QAction::triggered, this, &MainWindow::settingsActionSlot);
     connect(showObjectDockAction, &QAction::toggled, this, &MainWindow::showObjectDockActionSlot);
     connect(showConnectorDockAction, &QAction::toggled, this, &MainWindow::showConnectorDockActionSlot);
     connect(showHistoryDockAction, &QAction::toggled, this, &MainWindow::showHistoryDockActionSlot);
@@ -480,6 +486,8 @@ void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     this->setWindowTitle("UMLedit");
+
+    settings = new SettingsWindow(this);
 
     newProjectCount = 0;
 
