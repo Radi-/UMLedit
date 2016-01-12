@@ -28,6 +28,14 @@ class MainWindow : public QMainWindow
 
 Q_OBJECT
 
+private:
+    enum class ElementPlacementStatus{
+        none,
+        object,
+        connectorStartPoint,
+        connectorEndPoint
+    };
+
 private slots:
 
     void closeEvent(QCloseEvent *);
@@ -51,6 +59,8 @@ private slots:
 
     void setPropertyBrowser();
 
+    void connectorListItemSelectionChanged();
+    void objectListItemSelectionChanged();
 
 private:
 
@@ -115,6 +125,7 @@ private:
     QtTreePropertyBrowser* propertyBrowser;
 
     SettingsWindow* settings;
+    ElementPlacementStatus elementPlacementStatus;
 
     void connectSignals();
     void createMenus();
@@ -123,6 +134,8 @@ private:
     void createDockWidgets();
     void initTabWidget();
 
+
+    void setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus);
 
 public slots:
     void updateStatusBarCoordinates(qreal x, qreal y);

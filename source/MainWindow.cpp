@@ -67,8 +67,8 @@ void MainWindow::newActionSlot(){
     connector->setColour(Qt::black);  
     scene->addItem(connector);
 
-    commentObject->connectConnectorStartPoint(Connection(connector, QPointF(10, 10)));
-    classObject->connectConnectorEndPoint(Connection(connector, QPointF(30, 0)));
+    commentObject->connectConnectorStartPoint(Connection(connector, QPointF(0, 0)));
+    classObject->connectConnectorEndPoint(Connection(connector, QPointF(0, 0)));
 
     if (!saveAction->isEnabled()) saveAction->setEnabled(true);
     if (!saveAsAction->isEnabled()) saveAsAction->setEnabled(true);
@@ -136,7 +136,29 @@ void MainWindow::showPropertyDockActionSlot(bool checked){
     propertyWindow->setVisible(checked);
 }
 
+void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
+
+    this->elementPlacementStatus = elementPlacementStatus;
+
+    if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
+        objectList->blockSignals(true);
+        for(int i = 0; i < objectList->count(); i++){
+            objectList->item(i)->setSelected(false);
+        }
+        objectList->blockSignals(false);
+    }
+
+    if(elementPlacementStatus == ElementPlacementStatus::object){
+        connectorList->blockSignals(true);
+        for(int i = 0; i < connectorList->count(); i++){
+            connectorList->item(i)->setSelected(false);
+        }
+        connectorList->blockSignals(false);
+    }
+}
+
 bool MainWindow::tabCloseRequestedSlot(int index){
+
     GraphicsView* view = (GraphicsView*)tabWidget->widget(index);
     if (view->hasChanged()){
         QMessageBox::StandardButton reply = QMessageBox::question(this,
@@ -153,6 +175,7 @@ bool MainWindow::tabCloseRequestedSlot(int index){
             return false;
         }
     }
+
     propertyWindow->setWidget(selectionLabel);
     tabWidget->removeTab(index);
     delete view;
@@ -168,6 +191,7 @@ bool MainWindow::tabCloseRequestedSlot(int index){
 }
 
 void MainWindow::setPropertyBrowser(){
+
     QGraphicsView* view = static_cast<QGraphicsView*>(tabWidget->currentWidget());
     QGraphicsScene* scene = view->scene();
     if (scene->selectedItems().size() < 1){
@@ -182,6 +206,16 @@ void MainWindow::setPropertyBrowser(){
         propertyWindow->setWidget(selectionLabel);
         selectionLabel->setText(tr("Multiple items selected."));
     }
+}
+
+void MainWindow::connectorListItemSelectionChanged(){
+
+    setElementPlacementStatus(ElementPlacementStatus::connectorStartPoint);
+}
+
+void MainWindow::objectListItemSelectionChanged(){
+
+    setElementPlacementStatus(ElementPlacementStatus::object);
 }
 
 void MainWindow::connectSignals(){
@@ -204,6 +238,9 @@ void MainWindow::connectSignals(){
     connect(aboutQtAction, &QAction::triggered, this, &QApplication::aboutQt);
 
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabCloseRequestedSlot);
+
+    connect(objectList, SIGNAL(itemSelectionChanged()), this, SLOT(objectListItemSelectionChanged()));
+    connect(connectorList, SIGNAL(itemSelectionChanged()), this, SLOT(connectorListItemSelectionChanged()));
 
 }
 
