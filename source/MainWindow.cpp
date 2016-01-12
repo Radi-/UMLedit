@@ -62,8 +62,8 @@ void MainWindow::newActionSlot(){
     connector->setColour(Qt::black);  
     scene->addItem(connector);
 
-    commentObject->connectConnectorStartPoint(Connection(connector, QPointF(10, 10)));
-    classObject->connectConnectorEndPoint(Connection(connector, QPointF(30, 0)));
+    commentObject->connectConnectorStartPoint(Connection(connector, QPointF(0, 0)));
+    classObject->connectConnectorEndPoint(Connection(connector, QPointF(0, 0)));
 
 }
 
@@ -118,6 +118,30 @@ void MainWindow::connectSignals(){
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
 
+    connect(objectList, SIGNAL(itemSelectionChanged()), this, SLOT(objectListItemSelectionChanged()));
+    connect(connectorList, SIGNAL(itemSelectionChanged()), this, SLOT(connectorListItemSelectionChanged()));
+
+}
+
+void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
+
+    this->elementPlacementStatus = elementPlacementStatus;
+
+    if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
+        objectList->blockSignals(true);
+        for(int i = 0; i < objectList->count(); i++){
+            objectList->item(i)->setSelected(false);
+        }
+        objectList->blockSignals(false);
+    }
+
+    if(elementPlacementStatus == ElementPlacementStatus::object){
+        connectorList->blockSignals(true);
+        for(int i = 0; i < connectorList->count(); i++){
+            connectorList->item(i)->setSelected(false);
+        }
+        connectorList->blockSignals(false);
+    }
 }
 
 bool MainWindow::tabCloseRequestedSlot(int index){
@@ -161,6 +185,16 @@ void MainWindow::setPropertyBrowser(){
         propertyWindow->setWidget(selectionLabel);
         selectionLabel->setText(tr("Multiple items selected."));
     }
+}
+
+void MainWindow::connectorListItemSelectionChanged(){
+
+    setElementPlacementStatus(ElementPlacementStatus::connectorStartPoint);
+}
+
+void MainWindow::objectListItemSelectionChanged(){
+
+    setElementPlacementStatus(ElementPlacementStatus::object);
 }
 
 void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
