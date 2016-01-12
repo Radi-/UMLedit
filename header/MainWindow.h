@@ -48,6 +48,10 @@ private slots:
     void cutActionSlot();
     void copyActionSlot();
     void pasteActionSlot();
+    void showObjectDockActionSlot(bool checked);
+    void showConnectorDockActionSlot(bool checked);
+    void showHistoryDockActionSlot(bool checked);
+    void showPropertyDockActionSlot(bool checked);
 
     bool tabCloseRequestedSlot(int index);
 
@@ -58,6 +62,8 @@ private slots:
 
 private:
 
+    int newProjectCount;
+
     QLabel* selectionLabel;
     QLabel* coordinatesLabel;
 
@@ -65,10 +71,14 @@ private:
 
     QToolBar* fileToolBar;
     QToolBar* editToolBar;
+    QToolBar* viewToolBar;
 
     QMenuBar* menuBar;
     QMenu* fileMenu;
     QMenu* editMenu;
+    QMenu* toolsMenu;
+    QMenu* viewMenu;
+    QMenu* helpMenu;
     QMenu* burgerMenu;
 
     QAction* newAction;
@@ -76,11 +86,28 @@ private:
     QAction* exitAction;
     QAction* saveAction;
     QAction* saveAsAction;
+    QAction* exportAction;
     QAction* undoAction;
     QAction* redoAction;
     QAction* cutAction;
     QAction* copyAction;
     QAction* pasteAction;
+    QAction* selectAllAction;
+    QAction* selectNoneAction;
+    QAction* settingsAction;
+    QAction* arrangeGraphAction;
+    QAction* zoomInAction;
+    QAction* zoomOutAction;
+    QAction* zoomResetAction;
+    QAction* showObjectDockAction;
+    QAction* showConnectorDockAction;
+    QAction* showHistoryDockAction;
+    QAction* showPropertyDockAction;
+    QAction* showGridAction;
+    QAction* gridSnapAction;
+    QAction* helpContentsAction;
+    QAction* aboutQtAction;
+    QAction* aboutAction;
 
     QTabWidget* tabWidget;
     QPushButton* menuButton;
@@ -98,6 +125,12 @@ private:
     ElementPlacementStatus elementPlacementStatus;
 
     void connectSignals();
+    void createMenus();
+    void createToolBars();
+    void createActions();
+    void createDockWidgets();
+    void initTabWidget();
+
 
     void setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus);
 

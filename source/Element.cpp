@@ -28,7 +28,7 @@ Element::Element(){
     setFlags(ItemIsSelectable);
     setAcceptHoverEvents(true);
 
-    propertyBrowser.reset(new QtTreePropertyBrowser());
+    propertyBrowser = new QtTreePropertyBrowser();
 
     groupPropertyManager.reset(new QtGroupPropertyManager());
     colorPropertyManager.reset(new QtColorPropertyManager());
@@ -52,6 +52,9 @@ Element::Element(){
 }
 
 Element::~Element(){
+    if (!propertyBrowser.isNull()){
+       delete propertyBrowser;
+    }
 }
 
 void Element::setColour(QColor colour){
