@@ -36,12 +36,8 @@ Element::Element(){
     spinBoxFactory.reset(new QtSpinBoxFactory());
     colorFactory.reset(new QtColorEditorFactory());
 
-    propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data(), colorFactory.data());
-    propertyBrowser.data()->setFactoryForManager(colorPropertyManager.data()->subIntPropertyManager(), spinBoxFactory.data());
-
-    colorPropertyManager.reset(new QtColorPropertyManager(this));
-
-    setAcceptHoverEvents(true);
+    propertyBrowser->setFactoryForManager(colorPropertyManager.data(), colorFactory.data());
+    propertyBrowser->setFactoryForManager(colorPropertyManager->subIntPropertyManager(), spinBoxFactory.data());
 
     colour = colorPropertyManager.data()->addProperty("Colour");
     elementGroup = groupPropertyManager.data()->addProperty("Element");

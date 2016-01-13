@@ -28,14 +28,6 @@ class MainWindow : public QMainWindow
 
 Q_OBJECT
 
-private:
-    enum class ElementPlacementStatus{
-        none,
-        object,
-        connectorStartPoint,
-        connectorEndPoint
-    };
-
 private slots:
 
     void closeEvent(QCloseEvent *);
@@ -63,6 +55,13 @@ private slots:
     void objectListItemSelectionChanged();
 
 private:
+
+    enum class ElementPlacementStatus{
+        none,
+        object,
+        connectorStartPoint,
+        connectorEndPoint
+    };
 
     int newProjectCount;
 
