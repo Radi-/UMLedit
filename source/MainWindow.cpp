@@ -45,6 +45,7 @@ void MainWindow::newActionSlot(){
     GraphicsScene* scene = new GraphicsScene(this);
     connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateStatusBarCoordinates(qreal,qreal)));
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(setPropertyBrowser()));
+    connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateElementPlacementGhostPosition(qreal,qreal)));
     view->setScene(scene);
 
     tabWidget->addTab(view, tr("Project %1").arg(newProjectCount));
@@ -133,7 +134,15 @@ void MainWindow::showPropertyDockActionSlot(bool checked){
 
 void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
 
+    const int ghostAlpha = 50;
+
     this->elementPlacementStatus = elementPlacementStatus;
+
+    QGraphicsScene* scene = static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene();
+    if(elementPlacementGhost != nullptr){
+        scene->removeItem(elementPlacementGhost);
+        delete elementPlacementGhost;
+    }
 
     if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
         objectList->blockSignals(true);
@@ -149,6 +158,26 @@ void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlaceme
             connectorList->item(i)->setSelected(false);
         }
         connectorList->blockSignals(false);
+
+        for(int i = 0; i < objectList->count(); i++){
+
+            if(objectList->item(i)->type() == QGraphicsItemType::classObject){
+                elementPlacementGhost = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, ghostAlpha));
+                scene->addItem(elementPlacementGhost);
+            }
+            if(objectList->item(i)->type() == QGraphicsItemType::commentObject){
+                elementPlacementGhost = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, ghostAlpha));
+                scene->addItem(elementPlacementGhost);
+            }
+        }
+        for(int i = 0; i < connectorList->count(); i++){
+            if(connectorList->item(i)->type() == QGraphicsItemType::association){
+                //Connector* connector = new Connector();
+                //connector->setType(Connector::Type::association);
+                //connector->setColour(Qt::black);
+                //scene->addItem(elementPlacementGhost);
+            }
+        }
     }
 }
 
@@ -211,6 +240,11 @@ void MainWindow::connectorListItemSelectionChanged(){
 void MainWindow::objectListItemSelectionChanged(){
 
     setElementPlacementStatus(ElementPlacementStatus::object);
+}
+
+void MainWindow::updateElementPlacementGhostPosition(qreal x, qreal y){
+
+    if(elementPlacementGhost != nullptr) elementPlacementGhost->setPos(x, y);
 }
 
 void MainWindow::connectSignals(){
@@ -485,8 +519,8 @@ void MainWindow::createDockWidgets(){
     objectList->setWordWrap(true);
     objectList->setViewMode(QListView::IconMode);
     objectList->setFrameStyle(QFrame::NoFrame);
-    objectList->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectList));
-    objectList->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectList));
+    objectList->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectList, QGraphicsItemType::commentObject));
+    objectList->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectList, QGraphicsItemType::classObject));
     objectWindow->setWidget(objectList);
     objectWindow->setContentsMargins(0,0,0,0);
 
@@ -494,7 +528,7 @@ void MainWindow::createDockWidgets(){
     connectorList->setUniformItemSizes(true);
     connectorList->setViewMode(QListView::IconMode);
     connectorList->setFrameStyle(QFrame::NoFrame);
-    connectorList->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorList));
+    connectorList->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorList, QGraphicsItemType::association));
     connectorWindow->setWidget(connectorList);
     connectorWindow->setContentsMargins(0,0,0,0);
 
@@ -542,6 +576,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     saveAsAction->setEnabled(false);
     connectSignals();
     this->showMaximized();
+
+    elementPlacementGhost = nullptr;
 
 }
 

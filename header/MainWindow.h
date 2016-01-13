@@ -59,6 +59,7 @@ private slots:
 
     void connectorListItemSelectionChanged();
     void objectListItemSelectionChanged();
+    void updateElementPlacementGhostPosition(qreal x, qreal y);
 
 private:
 
@@ -124,13 +125,25 @@ private:
 
     ElementPlacementStatus elementPlacementStatus;
 
+    enum QGraphicsItemType{
+        classObject,
+        commentObject,
+        association,
+        aggregation,
+        composition,
+        generalization,
+        realization,
+        dependency
+    };
+
+    QGraphicsItem* elementPlacementGhost;
+
     void connectSignals();
     void createMenus();
     void createToolBars();
     void createActions();
     void createDockWidgets();
     void initTabWidget();
-
 
     void setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus);
 
