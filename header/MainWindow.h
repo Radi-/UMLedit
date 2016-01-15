@@ -151,6 +151,7 @@ private:
 
 public slots:
     void updateStatusBarCoordinates(qreal x, qreal y);
+    void setDTMModeOn(bool enabled);
 
 public:
     explicit MainWindow(QWidget* parent = 0);

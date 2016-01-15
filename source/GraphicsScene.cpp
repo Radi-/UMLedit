@@ -1,5 +1,6 @@
 
 #include <QGraphicsSceneMouseEvent>
+
 #include "header/GraphicsScene.h"
 
 GraphicsScene::GraphicsScene(QWidget *parent) : QGraphicsScene(parent)

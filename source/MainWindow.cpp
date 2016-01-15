@@ -276,6 +276,8 @@ void MainWindow::connectSignals(){
     connect(objectList, SIGNAL(itemSelectionChanged()), this, SLOT(objectListItemSelectionChanged()));
     connect(connectorList, SIGNAL(itemSelectionChanged()), this, SLOT(connectorListItemSelectionChanged()));
 
+    connect(settings, SIGNAL(alternateModeCheckBoxToggled(bool)), this, SLOT(setDTMModeOn(bool)));
+
 }
 
 void MainWindow::createMenus(){
@@ -482,7 +484,6 @@ void MainWindow::initTabWidget(){
     menuButton = new QPushButton(tabWidget);
     menuButton->setIcon(QIcon(":/image/menu_icon.svg"));
     menuButton->hide();
-    //tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
 
     /*Horrible hack or, as some may say, a temporary workaround
     Basically set fixed height for menubutton by creating a temporary tab
@@ -552,6 +553,34 @@ void MainWindow::createDockWidgets(){
 void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
 
     coordinatesLabel->setText(QString("(%1,%2)").arg(x).arg(y));
+}
+
+void MainWindow::setDTMModeOn(bool enabled){
+
+    if (enabled){
+        menuBar->hide();
+        fileToolBar->hide();
+        editToolBar->hide();
+        viewToolBar->hide();
+        objectWindow->hide();
+        connectorWindow->hide();
+        propertyWindow->hide();
+        historyWindow->hide();
+        tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
+        menuButton->show();
+    }
+    else{
+        menuBar->show();
+        fileToolBar->show();
+        editToolBar->show();
+        viewToolBar->show();
+        objectWindow->show();
+        connectorWindow->show();
+        propertyWindow->show();
+        historyWindow->show();
+        menuButton->hide();
+        tabWidget->setCornerWidget(0, Qt::TopLeftCorner);
+    }
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
