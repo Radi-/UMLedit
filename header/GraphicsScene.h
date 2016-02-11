@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include <QWidget>
+#include <QMenu>
 
 class GraphicsScene : public QGraphicsScene
 {
@@ -18,6 +19,8 @@ public:
     ~GraphicsScene();
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent);
+
+    void setContextMenu(QMenu* contextMenu);
 };
 
 #endif // GRAPHICSSCENE_H

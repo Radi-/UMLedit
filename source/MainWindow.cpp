@@ -43,10 +43,12 @@ void MainWindow::newActionSlot(){
     view->setAlignment(Qt::AlignTop|Qt::AlignLeft);
     view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     GraphicsScene* scene = new GraphicsScene(this);
-    connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateStatusBarCoordinates(qreal,qreal)));
-    connect(scene, SIGNAL(selectionChanged()), this, SLOT(setPropertyBrowser()));
-    connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateElementPlacementGhostPosition(qreal,qreal)));
+    connect(scene, &GraphicsScene::cursorPositionChanged, this, &MainWindow::updateStatusBarCoordinates);
+    connect(scene, &GraphicsScene::selectionChanged, this, &MainWindow::setPropertyBrowser);
+    connect(scene, &GraphicsScene::cursorPositionChanged, this, &MainWindow::updateElementPlacementGhostPosition);
     view->setScene(scene);
+    view->setContextMenu(contextMenu);
+
 
     tabWidget->addTab(view, tr("Project %1").arg(newProjectCount));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
@@ -221,19 +223,21 @@ bool MainWindow::tabCloseRequestedSlot(int index){
 
 void MainWindow::setPropertyBrowser(){
 
-    QGraphicsView* view = static_cast<QGraphicsView*>(tabWidget->currentWidget());
-    QGraphicsScene* scene = view->scene();
-    if (scene->selectedItems().size() < 1){
-        propertyWindow->setWidget(selectionLabel);
-        selectionLabel->setText(tr("No item(s) selected."));
-    }
-    else if (scene->selectedItems().size() == 1){
-        Element* item = static_cast<Element*>(scene->selectedItems().first());
-        propertyWindow->setWidget(item->getPropertyBrowser());
-    }
-    else{
-        propertyWindow->setWidget(selectionLabel);
-        selectionLabel->setText(tr("Multiple items selected."));
+    if(tabWidget->count() > 0 && !propertyWindow.isNull()){
+        QGraphicsView* view = static_cast<QGraphicsView*>(tabWidget->currentWidget());
+        QGraphicsScene* scene = view->scene();
+        if (scene->selectedItems().size() < 1){
+            propertyWindow->setWidget(selectionLabel);
+            selectionLabel->setText(tr("No item(s) selected."));
+        }
+        else if (scene->selectedItems().size() == 1){
+            Element* item = static_cast<Element*>(scene->selectedItems().first());
+            propertyWindow->setWidget(item->getPropertyBrowser());
+        }
+        else{
+            propertyWindow->setWidget(selectionLabel);
+            selectionLabel->setText(tr("Multiple items selected."));
+        }
     }
 }
 
@@ -273,10 +277,10 @@ void MainWindow::connectSignals(){
 
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabCloseRequestedSlot);
 
-    connect(objectList, SIGNAL(itemSelectionChanged()), this, SLOT(objectListItemSelectionChanged()));
-    connect(connectorList, SIGNAL(itemSelectionChanged()), this, SLOT(connectorListItemSelectionChanged()));
+    connect(objectList, &QListWidget::itemSelectionChanged, this, &MainWindow::objectListItemSelectionChanged);
+    connect(connectorList, &QListWidget::itemSelectionChanged, this, &MainWindow::connectorListItemSelectionChanged);
 
-    connect(settings, SIGNAL(alternateModeCheckBoxToggled(bool)), this, SLOT(setDTMModeOn(bool)));
+    connect(settings, &SettingsWindow::alternateModeCheckBoxToggled, this, &MainWindow::setDrawingTabletModeOn);
 
 }
 
@@ -303,6 +307,12 @@ void MainWindow::createMenus(){
     burgerMenu->addMenu(helpMenu);
 
     menuButton->setMenu(burgerMenu);
+
+    //Create contextMenu
+    contextMenu = new QMenu(this);
+    contextMenu->addAction(cutAction);
+    contextMenu->addAction(copyAction);
+    contextMenu->addAction(pasteAction);
 
     //Add fileMenu actions
     menuBar->addMenu(fileMenu);
@@ -356,6 +366,7 @@ void MainWindow::createMenus(){
     helpMenu->addAction(aboutQtAction);
     helpMenu->addAction(aboutAction);
 
+
 }
 
 void MainWindow::createToolBars(){
@@ -393,11 +404,14 @@ void MainWindow::createActions(){
     saveAction = new QAction(QIcon::fromTheme("document-save"), tr("Save"), this);
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setStatusTip(tr("Save project"));
+    saveAction->setDisabled(true);
     saveAsAction = new QAction(QIcon::fromTheme("document-save-as"), tr("Save As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setStatusTip(tr("Save project to another location"));
+    saveAsAction->setDisabled(true);
     exportAction = new QAction(tr("Export"), this);
     exportAction->setStatusTip(tr("Export project to another format"));
+    exportAction->setDisabled(true);
     exitAction = new QAction(QIcon::fromTheme("application-exit"), tr("Exit"), this);
     exitAction->setShortcut(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Exit the application"));
@@ -406,39 +420,50 @@ void MainWindow::createActions(){
     undoAction = new QAction(QIcon::fromTheme("edit-undo"), tr("Undo"), this);
     undoAction->setShortcut(QKeySequence::Undo);
     undoAction->setStatusTip(tr("Undo an action"));
+    undoAction->setDisabled(true);
     redoAction = new QAction(QIcon::fromTheme("edit-redo"), tr("Redo"), this);
     redoAction->setShortcut(QKeySequence::Redo);
     redoAction->setStatusTip(tr("Redo an undoed action"));
+    redoAction->setDisabled(true);
     cutAction = new QAction(QIcon::fromTheme("edit-cut"), tr("Cut"), this);
     cutAction->setShortcut(QKeySequence::Cut);
     cutAction->setStatusTip(tr("Cut object(s)"));
+    cutAction->setDisabled(true);
     copyAction = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy"), this);
     copyAction->setShortcut(QKeySequence::Copy);
     copyAction->setStatusTip(tr("Copy object(s)"));
+    copyAction->setDisabled(true);
     pasteAction = new QAction(QIcon::fromTheme("edit-paste"), tr("Paste"), this);
     pasteAction->setShortcut(QKeySequence::Paste);
     pasteAction->setStatusTip(tr("Paste object(s)"));
+    pasteAction->setDisabled(true);
     selectAllAction = new QAction(QIcon::fromTheme("edit-select-all"), tr("Select All"), this);
     selectAllAction->setShortcut(QKeySequence::SelectAll);
     selectAllAction->setStatusTip(tr("Select everything from a project"));
+    selectAllAction->setDisabled(true);
     selectNoneAction = new QAction(tr("Select None"), this);
     selectNoneAction->setStatusTip(tr("Make every item unselected"));
+    selectNoneAction->setDisabled(true);
 
     //toolsMenu actions
     settingsAction = new QAction(tr("Settings"), this);
     settingsAction->setStatusTip(tr("Settings"));
     arrangeGraphAction = new QAction(tr("Arrange Graph"), this);
     arrangeGraphAction->setStatusTip("Arrange your project's items to a certain order");
+    arrangeGraphAction->setDisabled(true);
 
     //viewMenu actions
     zoomInAction = new QAction(QIcon::fromTheme("zoom-in"), tr("Zoom In"), this);
     zoomInAction->setShortcut(QKeySequence::ZoomIn);
     zoomInAction->setStatusTip(tr("Zoom in"));
+    zoomInAction->setDisabled(true);
     zoomOutAction = new QAction(QIcon::fromTheme("zoom-out"), tr("Zoom Out"), this);
     zoomOutAction->setShortcut(QKeySequence::ZoomOut);
     zoomOutAction->setStatusTip(tr("Zoom out"));
+    zoomOutAction->setDisabled(true);
     zoomResetAction = new QAction(QIcon::fromTheme("zoom-original"), tr("Reset Zoom"), this);
     zoomResetAction->setStatusTip(tr("Reset zoom to 100%"));
+    zoomResetAction->setDisabled(true);
     showObjectDockAction = new QAction(tr("Show Objects Window"), this);
     showObjectDockAction->setStatusTip(tr("Show/hide objects window"));
     showObjectDockAction->setCheckable(true);
@@ -458,9 +483,11 @@ void MainWindow::createActions(){
     showGridAction = new QAction(tr("Show Grid"), this);
     showGridAction->setStatusTip(tr("Show/hide grid in the project"));
     showGridAction->setCheckable(true);
+    showGridAction->setDisabled(true);
     gridSnapAction = new QAction(tr("Grid Snap"), this);
     gridSnapAction->setStatusTip(tr("Enable/disable grid snap"));
     gridSnapAction->setCheckable(true);
+    gridSnapAction->setDisabled(true);
 
     //helpMenu actions
     helpContentsAction = new QAction(QIcon::fromTheme("help-contents"), tr("Help Contents"), this);
@@ -555,7 +582,7 @@ void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
     coordinatesLabel->setText(QString("(%1,%2)").arg(x).arg(y));
 }
 
-void MainWindow::setDTMModeOn(bool enabled){
+void MainWindow::setDrawingTabletModeOn(bool enabled){
 
     if (enabled){
         menuBar->hide();
@@ -608,9 +635,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     addToolBar(editToolBar);
     addToolBar(viewToolBar);
     setCentralWidget(tabWidget);
-
-    saveAction->setEnabled(false);
-    saveAsAction->setEnabled(false);
     connectSignals();
     this->showMaximized();
 
