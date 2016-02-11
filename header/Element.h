@@ -41,6 +41,7 @@ public:
 
     virtual QtTreePropertyBrowser* getPropertyBrowser() = 0;
     void setColour(QColor colour);
+    void setAlpha(unsigned int alpha);
 
 };
 #endif // ELEMENT_H

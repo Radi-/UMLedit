@@ -54,6 +54,7 @@ private slots:
     void connectorListItemSelectionChanged();
     void objectListItemSelectionChanged();
     void updateElementPlacementGhostPosition(qreal x, qreal y);
+    void placeElement(Qt::MouseButton mouseButton);
 
 private:
 
@@ -127,7 +128,7 @@ private:
     SettingsWindow* settings;
     ElementPlacementStatus elementPlacementStatus;
 
-    enum QGraphicsItemType{
+    enum ElementType{
         classObject,
         commentObject,
         association,
@@ -138,7 +139,7 @@ private:
         dependency
     };
 
-    QGraphicsItem* elementPlacementGhost;
+    Element* elementPlacementGhost;
 
     void connectSignals();
     void createMenus();

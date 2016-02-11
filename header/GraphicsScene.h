@@ -10,6 +10,7 @@ Q_OBJECT
 
 signals:
     void cursorPositionChanged(qreal x, qreal y);
+    void mouseClicked(Qt::MouseButton mouseButton);
 
 private:
 
@@ -18,6 +19,7 @@ public:
     ~GraphicsScene();
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 };
 
 #endif // GRAPHICSSCENE_H

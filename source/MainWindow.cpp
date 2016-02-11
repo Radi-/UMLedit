@@ -46,19 +46,23 @@ void MainWindow::newActionSlot(){
     connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateStatusBarCoordinates(qreal,qreal)));
     connect(scene, SIGNAL(selectionChanged()), this, SLOT(setPropertyBrowser()));
     connect(scene, SIGNAL(cursorPositionChanged(qreal,qreal)), this, SLOT(updateElementPlacementGhostPosition(qreal,qreal)));
+    connect(scene, SIGNAL(mouseClicked(Qt::MouseButton)), this, SLOT(placeElement(Qt::MouseButton)));
     view->setScene(scene);
 
     tabWidget->addTab(view, tr("Project %1").arg(newProjectCount));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
 
     //temporary test:
-    CommentObject* commentObject = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, 255));
+    CommentObject* commentObject = new CommentObject();
     commentObject->setPos(QPointF(0, 0));
-    commentObject->setColour(QColor(100, 0, 150, 200));
+    commentObject->setSize(QPoint(100, 50));
+    commentObject->setColour(QColor(200, 200, 0, 255));
     scene->addItem(commentObject);
 
-    ClassObject* classObject = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, 255));
+    ClassObject* classObject = new ClassObject();
     classObject->setPos(QPointF(100, 100));
+    classObject->setSize(QPoint(200, 150));
+    classObject->setColour(QColor(200, 200, 200, 255));
     scene->addItem(classObject);
 
     Connector* connector = new Connector();
@@ -139,49 +143,51 @@ void MainWindow::showPropertyDockActionSlot(bool checked){
 
 void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
 
-    const int ghostAlpha = 50;
+    if(tabWidget->count() > 0){
 
-    this->elementPlacementStatus = elementPlacementStatus;
+        const int ghostAlpha = 50;
 
-    QGraphicsScene* scene = static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene();
-    if(elementPlacementGhost != nullptr){
-        scene->removeItem(elementPlacementGhost);
-        delete elementPlacementGhost;
-    }
+        this->elementPlacementStatus = elementPlacementStatus;
 
-    if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
-        objectList->blockSignals(true);
-        for(int i = 0; i < objectList->count(); i++){
-            objectList->item(i)->setSelected(false);
+        QGraphicsScene* scene = static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene();
+
+        if(elementPlacementGhost != nullptr){
+            scene->removeItem(elementPlacementGhost);
+            delete elementPlacementGhost;
         }
-        objectList->blockSignals(false);
-    }
 
-    if(elementPlacementStatus == ElementPlacementStatus::object){
-        connectorList->blockSignals(true);
-        for(int i = 0; i < connectorList->count(); i++){
-            connectorList->item(i)->setSelected(false);
+        if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
+
+            objectList->blockSignals(true);
+            for(int i = 0; i < objectList->count(); i++){
+                objectList->item(i)->setSelected(false);
+            }
+            objectList->blockSignals(false);
+
+            if(connectorList->currentItem()->type() == ElementType::association){
+                elementPlacementGhost = new Connector();
+                static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
+            }
+            elementPlacementGhost->setAlpha(ghostAlpha);
+            scene->addItem(elementPlacementGhost);
         }
-        connectorList->blockSignals(false);
 
-        for(int i = 0; i < objectList->count(); i++){
+        if(elementPlacementStatus == ElementPlacementStatus::object){
 
-            if(objectList->item(i)->type() == QGraphicsItemType::classObject){
-                elementPlacementGhost = new ClassObject(QPoint(200, 150), QColor(200, 200, 200, ghostAlpha));
-                scene->addItem(elementPlacementGhost);
+            connectorList->blockSignals(true);
+            for(int i = 0; i < connectorList->count(); i++){
+                connectorList->item(i)->setSelected(false);
             }
-            if(objectList->item(i)->type() == QGraphicsItemType::commentObject){
-                elementPlacementGhost = new CommentObject(QPoint(100, 50), QColor(200, 200, 200, ghostAlpha));
-                scene->addItem(elementPlacementGhost);
+            connectorList->blockSignals(false);
+
+            if(objectList->currentItem()->type() == ElementType::classObject){
+                elementPlacementGhost = new ClassObject();
             }
-        }
-        for(int i = 0; i < connectorList->count(); i++){
-            if(connectorList->item(i)->type() == QGraphicsItemType::association){
-                //Connector* connector = new Connector();
-                //connector->setType(Connector::Type::association);
-                //connector->setColour(Qt::black);
-                //scene->addItem(elementPlacementGhost);
+            else if(objectList->currentItem()->type() == ElementType::commentObject){
+                elementPlacementGhost = new CommentObject();
             }
+            elementPlacementGhost->setAlpha(ghostAlpha);
+            scene->addItem(elementPlacementGhost);
         }
     }
 }
@@ -249,7 +255,39 @@ void MainWindow::objectListItemSelectionChanged(){
 
 void MainWindow::updateElementPlacementGhostPosition(qreal x, qreal y){
 
-    if(elementPlacementGhost != nullptr) elementPlacementGhost->setPos(x, y);
+    if(elementPlacementGhost != nullptr){
+        if(elementPlacementStatus == ElementPlacementStatus::object){
+            elementPlacementGhost->setPos(x, y);
+        }
+        else if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
+            elementPlacementGhost->setPos(x, y);
+            static_cast<Connector*>(elementPlacementGhost)->setEndPoint(QPoint(x, y));
+        }
+        else if(elementPlacementStatus == ElementPlacementStatus::connectorEndPoint){
+            static_cast<Connector*>(elementPlacementGhost)->setEndPoint(QPoint(x, y));
+        }
+    }
+}
+
+void MainWindow::placeElement(Qt::MouseButton mouseButton){
+
+    if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
+        elementPlacementStatus = ElementPlacementStatus::connectorEndPoint;
+    }
+    else if(elementPlacementStatus == ElementPlacementStatus::connectorEndPoint ||
+            elementPlacementStatus == ElementPlacementStatus::object){
+        elementPlacementGhost->setAlpha(255);
+        elementPlacementStatus = ElementPlacementStatus::none;
+        elementPlacementGhost = nullptr;
+    }
+
+    objectList->blockSignals(true);
+    connectorList->blockSignals(true);
+    connectorList->clearSelection();
+    objectList->clearSelection();
+    objectList->blockSignals(false);
+    connectorList->blockSignals(false);
+    static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene()->update();
 }
 
 void MainWindow::connectSignals(){
@@ -525,8 +563,8 @@ void MainWindow::createDockWidgets(){
     objectList->setWordWrap(true);
     objectList->setViewMode(QListView::IconMode);
     objectList->setFrameStyle(QFrame::NoFrame);
-    objectList->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectList, QGraphicsItemType::commentObject));
-    objectList->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectList, QGraphicsItemType::classObject));
+    objectList->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectList, ElementType::commentObject));
+    objectList->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectList, ElementType::classObject));
     objectWindow->setWidget(objectList);
     objectWindow->setContentsMargins(0,0,0,0);
 
@@ -534,7 +572,7 @@ void MainWindow::createDockWidgets(){
     connectorList->setUniformItemSizes(true);
     connectorList->setViewMode(QListView::IconMode);
     connectorList->setFrameStyle(QFrame::NoFrame);
-    connectorList->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorList, QGraphicsItemType::association));
+    connectorList->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorList, ElementType::association));
     connectorWindow->setWidget(connectorList);
     connectorWindow->setContentsMargins(0,0,0,0);
 
@@ -585,6 +623,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     connectSignals();
     this->showMaximized();
 
+    elementPlacementStatus = ElementPlacementStatus::none;
     elementPlacementGhost = nullptr;
 
 }
