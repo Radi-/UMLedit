@@ -63,3 +63,13 @@ bool GraphicsView::saveFileAs(){
 bool GraphicsView::hasChanged(){
     return changed;
 }
+
+
+void GraphicsView::setContextMenu(QMenu* contextMenu){
+    this->contextMenu = contextMenu;
+}
+
+void GraphicsView::contextMenuEvent(QContextMenuEvent* event){
+    QGraphicsView::contextMenuEvent(event);
+    contextMenu->exec(event->globalPos());
+}

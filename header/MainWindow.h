@@ -15,6 +15,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QPointer>
 
 #include "qttreepropertybrowser.h"
 #include "header/CommentObject.h"
@@ -83,6 +84,7 @@ private:
     QMenu* viewMenu;
     QMenu* helpMenu;
     QMenu* burgerMenu;
+    QMenu* contextMenu;
 
     QAction* newAction;
     QAction* openAction;
@@ -117,7 +119,7 @@ private:
 
     QDockWidget* objectWindow;
     QDockWidget* connectorWindow;
-    QDockWidget* propertyWindow;
+    QPointer<QDockWidget> propertyWindow;
     QDockWidget* historyWindow;
 
     QListWidget* objectList;
@@ -152,6 +154,7 @@ private:
 
 public slots:
     void updateStatusBarCoordinates(qreal x, qreal y);
+    void setDrawingTabletModeOn(bool enabled);
 
 public:
     explicit MainWindow(QWidget* parent = 0);

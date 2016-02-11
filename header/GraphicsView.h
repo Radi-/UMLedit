@@ -4,6 +4,9 @@
 #include <QGraphicsView>
 #include <QString>
 #include <QUndoStack>
+#include <QPointer>
+#include <QMenu>
+#include <QContextMenuEvent>
 
 class GraphicsView : public QGraphicsView
 {
@@ -13,6 +16,7 @@ Q_OBJECT
 private:
    QString filePath;
    bool changed;
+   QPointer<QMenu> contextMenu;
 
 public:
    GraphicsView(QWidget* parent = 0);
@@ -21,12 +25,14 @@ public:
 
    QString getFilePath();
    void setFilePath(QString& path);
+   void setContextMenu(QMenu* contextMenu);
 
    bool hasChanged();
 
    bool saveFile();
    bool saveFileAs();
 
+   void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif // GRAPHICSVIEW_H
