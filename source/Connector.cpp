@@ -12,6 +12,8 @@ Connector::Connector(){
     connect(this, SIGNAL(xChanged()), this, SLOT(checkGeometryChange()));
     connect(this, SIGNAL(yChanged()), this, SLOT(checkGeometryChange()));
     connect(this, SIGNAL(endPointChanged()), this, SLOT(checkGeometryChange()));
+
+    setColour(QColor(0, 0, 0, 255));
 }
 
 Connector::~Connector(){

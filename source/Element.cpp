@@ -57,3 +57,10 @@ void Element::setColour(QColor colour){
 
     colorPropertyManager->setValue(this->colour, colour);
 }
+
+void Element::setAlpha(unsigned int alpha){
+
+    QColor colour = colorPropertyManager->value(this->colour);
+    colour.setAlpha(alpha);
+    colorPropertyManager->setValue(this->colour, colour);
+}

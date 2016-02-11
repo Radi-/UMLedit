@@ -2,9 +2,6 @@
 #include "header/CommentObject.h"
 
 CommentObject::CommentObject(){
-}
-
-CommentObject::CommentObject(QPoint size, QColor colour){
 
     stringPropertyManager.reset(new QtStringPropertyManager(this));
     fontPropertyManager.reset(new QtFontPropertyManager(this));
@@ -14,8 +11,8 @@ CommentObject::CommentObject(QPoint size, QColor colour){
 
     fontPropertyManager.data()->setValue(this->font, QFont("Sans", 10));
     stringPropertyManager.data()->setValue(this->string, "comment");
-    pointPropertyManager.data()->setValue(this->size, size);
-    colorPropertyManager.data()->setValue(this->colour, colour);
+    pointPropertyManager.data()->setValue(this->size, QPoint(100, 50));
+    colorPropertyManager.data()->setValue(this->colour, QColor(255, 255, 0, 255));
 
 }
 

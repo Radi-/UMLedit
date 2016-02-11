@@ -2,9 +2,6 @@
 #include "header/ClassObject.h"
 
 ClassObject::ClassObject(){
-}
-
-ClassObject::ClassObject(QPoint size, QColor colour){
 
     stringPropertyManager.reset(new QtStringPropertyManager());
     fontPropertyManager.reset(new QtFontPropertyManager());
@@ -28,8 +25,9 @@ ClassObject::ClassObject(QPoint size, QColor colour){
     propertyBrowser.data()->setFactoryForManager(fontPropertyManager.data(), fontFactory.data());
     propertyBrowser.data()->addProperty(classGroup);
 
+    QPoint size(200, 150);
     pointPropertyManager.data()->setValue(sizep, size);
-    colorPropertyManager.data()->setValue(this->colour, colour);
+    colorPropertyManager.data()->setValue(this->colour, QColor(200, 200, 200, 255));
     stringPropertyManager.data()->setValue(name, "class name");
 
     attributes.push_back("attribute 1");

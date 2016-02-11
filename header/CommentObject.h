@@ -21,7 +21,6 @@ private:
 public:
 
     CommentObject();
-    CommentObject(QPoint size, QColor colour);
     ~CommentObject();
 
     QtTreePropertyBrowser* getPropertyBrowser() override;

@@ -46,7 +46,6 @@ public slots:
 public:
 
     ClassObject();
-    ClassObject(QPoint size, QColor colour);
     ~ClassObject();
 
     QtTreePropertyBrowser* getPropertyBrowser() override;
