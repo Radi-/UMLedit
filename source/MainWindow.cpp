@@ -395,17 +395,17 @@ void MainWindow::createToolBars(){
 void MainWindow::createActions(){
 
     //fileMenu actions
-    newAction = new QAction(QIcon::fromTheme("document-new"), tr("New"), this);
+    newAction = new QAction(QIcon::fromTheme("document-new", QIcon(":/image/document-new.svg")), tr("New"), this);
     newAction->setShortcut(QKeySequence::New);
     newAction->setStatusTip(tr("Create new project"));
-    openAction = new QAction(QIcon::fromTheme("document-open"), tr("Open"), this);
+    openAction = new QAction(QIcon::fromTheme("document-open", QIcon(":/image/document-open.svg")), tr("Open"), this);
     openAction->setShortcut(QKeySequence::Open);
     openAction->setStatusTip(tr("Open an existing project"));
-    saveAction = new QAction(QIcon::fromTheme("document-save"), tr("Save"), this);
+    saveAction = new QAction(QIcon::fromTheme("document-save", QIcon(":/image/document-save.svg")), tr("Save"), this);
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setStatusTip(tr("Save project"));
     saveAction->setDisabled(true);
-    saveAsAction = new QAction(QIcon::fromTheme("document-save-as"), tr("Save As..."), this);
+    saveAsAction = new QAction(QIcon::fromTheme("document-save-as", QIcon(":/image/document-save-as.svg")), tr("Save As..."), this);
     saveAsAction->setShortcut(QKeySequence::SaveAs);
     saveAsAction->setStatusTip(tr("Save project to another location"));
     saveAsAction->setDisabled(true);
@@ -417,27 +417,27 @@ void MainWindow::createActions(){
     exitAction->setStatusTip(tr("Exit the application"));
 
     //editMenu actions
-    undoAction = new QAction(QIcon::fromTheme("edit-undo"), tr("Undo"), this);
+    undoAction = new QAction(QIcon::fromTheme("edit-undo", QIcon(":/image/edit-undo.svg")), tr("Undo"), this);
     undoAction->setShortcut(QKeySequence::Undo);
     undoAction->setStatusTip(tr("Undo an action"));
     undoAction->setDisabled(true);
-    redoAction = new QAction(QIcon::fromTheme("edit-redo"), tr("Redo"), this);
+    redoAction = new QAction(QIcon::fromTheme("edit-redo", QIcon(":/image/edit-redo.svg")), tr("Redo"), this);
     redoAction->setShortcut(QKeySequence::Redo);
     redoAction->setStatusTip(tr("Redo an undoed action"));
     redoAction->setDisabled(true);
-    cutAction = new QAction(QIcon::fromTheme("edit-cut"), tr("Cut"), this);
+    cutAction = new QAction(QIcon::fromTheme("edit-cut", QIcon(":/image/edit-cut.svg")), tr("Cut"), this);
     cutAction->setShortcut(QKeySequence::Cut);
     cutAction->setStatusTip(tr("Cut object(s)"));
     cutAction->setDisabled(true);
-    copyAction = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy"), this);
+    copyAction = new QAction(QIcon::fromTheme("edit-copy", QIcon(":/image/edit-copy.svg")), tr("Copy"), this);
     copyAction->setShortcut(QKeySequence::Copy);
     copyAction->setStatusTip(tr("Copy object(s)"));
     copyAction->setDisabled(true);
-    pasteAction = new QAction(QIcon::fromTheme("edit-paste"), tr("Paste"), this);
+    pasteAction = new QAction(QIcon::fromTheme("edit-paste", QIcon(":/image/edit-paste.svg")), tr("Paste"), this);
     pasteAction->setShortcut(QKeySequence::Paste);
     pasteAction->setStatusTip(tr("Paste object(s)"));
     pasteAction->setDisabled(true);
-    selectAllAction = new QAction(QIcon::fromTheme("edit-select-all"), tr("Select All"), this);
+    selectAllAction = new QAction(QIcon::fromTheme("edit-select-all", QIcon(":/image/edit-select-all.svg")), tr("Select All"), this);
     selectAllAction->setShortcut(QKeySequence::SelectAll);
     selectAllAction->setStatusTip(tr("Select everything from a project"));
     selectAllAction->setDisabled(true);
@@ -453,15 +453,15 @@ void MainWindow::createActions(){
     arrangeGraphAction->setDisabled(true);
 
     //viewMenu actions
-    zoomInAction = new QAction(QIcon::fromTheme("zoom-in"), tr("Zoom In"), this);
+    zoomInAction = new QAction(QIcon::fromTheme("zoom-in", QIcon(":/image/View-zoom-in.svg")), tr("Zoom In"), this);
     zoomInAction->setShortcut(QKeySequence::ZoomIn);
     zoomInAction->setStatusTip(tr("Zoom in"));
     zoomInAction->setDisabled(true);
-    zoomOutAction = new QAction(QIcon::fromTheme("zoom-out"), tr("Zoom Out"), this);
+    zoomOutAction = new QAction(QIcon::fromTheme("zoom-out", QIcon(":/image/View-zoom-out.svg")), tr("Zoom Out"), this);
     zoomOutAction->setShortcut(QKeySequence::ZoomOut);
     zoomOutAction->setStatusTip(tr("Zoom out"));
     zoomOutAction->setDisabled(true);
-    zoomResetAction = new QAction(QIcon::fromTheme("zoom-original"), tr("Reset Zoom"), this);
+    zoomResetAction = new QAction(QIcon::fromTheme("zoom-original", QIcon(":/image/View-zoom-fit.svg")), tr("Reset Zoom"), this);
     zoomResetAction->setStatusTip(tr("Reset zoom to 100%"));
     zoomResetAction->setDisabled(true);
     showObjectDockAction = new QAction(tr("Show Objects Window"), this);
