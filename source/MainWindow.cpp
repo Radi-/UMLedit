@@ -708,6 +708,8 @@ void MainWindow::initTabWidget(){
 
 void MainWindow::createTabletModeWidgets(){
 
+    int padding = 20;
+
     objectListTabletMode = new QListWidget(this);
     objectListTabletMode->setUniformItemSizes(true);
     objectListTabletMode->setGridSize(QSize(50, 60));
@@ -717,7 +719,7 @@ void MainWindow::createTabletModeWidgets(){
     objectListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectListTabletMode, ElementType::commentObject));
     objectListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectListTabletMode, ElementType::classObject));
     objectListTabletMode->setWrapping(false);
-    objectListTabletMode->resize(objectListTabletMode->count() * objectListTabletMode->gridSize().width(), objectListTabletMode->gridSize().height());
+    objectListTabletMode->resize(objectListTabletMode->count() * objectListTabletMode->gridSize().width() + padding, objectListTabletMode->gridSize().height() + padding);
     objectListTabletMode->hide();
 
     connectorListTabletMode = new QListWidget(this);
@@ -728,7 +730,7 @@ void MainWindow::createTabletModeWidgets(){
     connectorListTabletMode->setFrameStyle(QFrame::Panel);
     connectorListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorListTabletMode, ElementType::association));
     connectorListTabletMode->setWrapping(false);
-    connectorListTabletMode->resize(connectorListTabletMode->count() * connectorListTabletMode->gridSize().width(), connectorListTabletMode->gridSize().height());
+    connectorListTabletMode->resize(connectorListTabletMode->count() * connectorListTabletMode->gridSize().width() + padding, connectorListTabletMode->gridSize().height() + padding);
     connectorListTabletMode->hide();
 }
 
