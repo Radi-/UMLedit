@@ -7,6 +7,7 @@
 #include <QPointer>
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QListWidget>
 
 class GraphicsView : public QGraphicsView
 {
@@ -32,7 +33,7 @@ public:
    bool saveFile();
    bool saveFileAs();
 
-   void contextMenuEvent(QContextMenuEvent *event) override;
+   void contextMenuEvent(QContextMenuEvent* event) override;
 };
 
 #endif // GRAPHICSVIEW_H

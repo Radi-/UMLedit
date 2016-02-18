@@ -32,6 +32,7 @@ Q_OBJECT
 private slots:
 
     void closeEvent(QCloseEvent *);
+    void keyPressEvent(QKeyEvent* event);
 
     void newActionSlot();
     void openActionSlot();
@@ -53,9 +54,13 @@ private slots:
     void setPropertyBrowser();
 
     void connectorListItemSelectionChanged();
+    void connectorListTabletModeItemSelectionChanged();
     void objectListItemSelectionChanged();
+    void objectListTabletModeItemSelectionChanged();
     void updateElementPlacementGhostPosition(qreal x, qreal y);
     void placeElement(Qt::MouseButton mouseButton);
+    void updateTabletModeWidgetList(Qt::Key key);
+    void hideTabletModeWidgets();
 
 private:
 
@@ -66,6 +71,7 @@ private:
         connectorEndPoint
     };
 
+    bool tabletModeEnabled;
     int newProjectCount;
 
     QLabel* selectionLabel;
@@ -123,7 +129,9 @@ private:
     QDockWidget* historyWindow;
 
     QListWidget* objectList;
+    QListWidget* objectListTabletMode;
     QListWidget* connectorList;
+    QListWidget* connectorListTabletMode;
     QUndoView* historyView;
     QtTreePropertyBrowser* propertyBrowser;
 
@@ -149,7 +157,9 @@ private:
     void createActions();
     void createDockWidgets();
     void initTabWidget();
+    void createTabletModeWidgets();
 
+    void setListUnselected(QListWidget* list);
     void setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus);
 
 public slots:

@@ -31,6 +31,28 @@ void MainWindow::closeEvent(QCloseEvent *event){
     }
 }
 
+void MainWindow::keyPressEvent(QKeyEvent* event){
+
+    if(tabletModeEnabled){
+        if(tabWidget->count() > 0){
+
+            switch (event->key()){
+
+            case Qt::Key_Q:
+                updateTabletModeWidgetList(Qt::Key_Q);
+                break;
+            case Qt::Key_W:
+                updateTabletModeWidgetList(Qt::Key_W);
+                break;
+            default:
+                event->ignore();
+                break;
+            }
+
+        }
+    }
+}
+
 void MainWindow::newActionSlot(){
 
     newProjectCount++;
@@ -47,7 +69,7 @@ void MainWindow::newActionSlot(){
     connect(scene, &GraphicsScene::cursorPositionChanged, this, &MainWindow::updateStatusBarCoordinates);
     connect(scene, &GraphicsScene::selectionChanged, this, &MainWindow::setPropertyBrowser);
     connect(scene, &GraphicsScene::cursorPositionChanged, this, &MainWindow::updateElementPlacementGhostPosition);
-    connect(scene, SIGNAL(mouseClicked(Qt::MouseButton)), this, SLOT(placeElement(Qt::MouseButton)));
+    connect(scene, &GraphicsScene::mouseClicked, this, &MainWindow::placeElement);
 
     view->setScene(scene);
     view->setContextMenu(contextMenu);
@@ -55,7 +77,8 @@ void MainWindow::newActionSlot(){
     tabWidget->addTab(view, tr("Project %1").arg(newProjectCount));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
 
-    //temporary test:
+    //test objects:
+    /*
     CommentObject* commentObject = new CommentObject();
     commentObject->setPos(QPointF(0, 0));
     commentObject->setSize(QPoint(100, 50));
@@ -77,6 +100,7 @@ void MainWindow::newActionSlot(){
 
     commentObject->connectConnectorStartPoint(Connection(connector, QPointF(0, 0)));
     classObject->connectConnectorEndPoint(Connection(connector, QPointF(0, 0)));
+    */
 
     if (!saveAction->isEnabled()) saveAction->setEnabled(true);
     if (!saveAsAction->isEnabled()) saveAsAction->setEnabled(true);
@@ -144,6 +168,13 @@ void MainWindow::showPropertyDockActionSlot(bool checked){
     propertyWindow->setVisible(checked);
 }
 
+void MainWindow::setListUnselected(QListWidget* list){
+
+    list->blockSignals(true);
+    list->clearSelection();
+    list->blockSignals(false);
+}
+
 void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
 
     if(tabWidget->count() > 0){
@@ -161,34 +192,48 @@ void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlaceme
 
         if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
 
-            objectList->blockSignals(true);
-            for(int i = 0; i < objectList->count(); i++){
-                objectList->item(i)->setSelected(false);
-            }
-            objectList->blockSignals(false);
+            setListUnselected(objectList);
 
-            if(connectorList->currentItem()->type() == ElementType::association){
-                elementPlacementGhost = new Connector();
-                static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
+            if(tabletModeEnabled){
+                if(connectorListTabletMode->currentItem()->type() == ElementType::association){
+                    elementPlacementGhost = new Connector();
+                    static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
+                    setListUnselected(connectorList);
+                }
             }
+            else{
+                if(connectorList->currentItem()->type() == ElementType::association){
+                    elementPlacementGhost = new Connector();
+                    static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
+                }
+            }
+
             elementPlacementGhost->setAlpha(ghostAlpha);
             scene->addItem(elementPlacementGhost);
         }
 
         if(elementPlacementStatus == ElementPlacementStatus::object){
 
-            connectorList->blockSignals(true);
-            for(int i = 0; i < connectorList->count(); i++){
-                connectorList->item(i)->setSelected(false);
-            }
-            connectorList->blockSignals(false);
+            setListUnselected(connectorList);
 
-            if(objectList->currentItem()->type() == ElementType::classObject){
-                elementPlacementGhost = new ClassObject();
+            if(tabletModeEnabled){
+                if(objectListTabletMode->currentItem()->type() == ElementType::classObject){
+                    elementPlacementGhost = new ClassObject();
+                }
+                else if(objectListTabletMode->currentItem()->type() == ElementType::commentObject){
+                    elementPlacementGhost = new CommentObject();
+                }
+                setListUnselected(objectList);
             }
-            else if(objectList->currentItem()->type() == ElementType::commentObject){
-                elementPlacementGhost = new CommentObject();
+            else{
+                if(objectList->currentItem()->type() == ElementType::classObject){
+                    elementPlacementGhost = new ClassObject();
+                }
+                else if(objectList->currentItem()->type() == ElementType::commentObject){
+                    elementPlacementGhost = new CommentObject();
+                }
             }
+
             elementPlacementGhost->setAlpha(ghostAlpha);
             scene->addItem(elementPlacementGhost);
         }
@@ -251,11 +296,25 @@ void MainWindow::setPropertyBrowser(){
 void MainWindow::connectorListItemSelectionChanged(){
 
     setElementPlacementStatus(ElementPlacementStatus::connectorStartPoint);
+    hideTabletModeWidgets();
+}
+
+void MainWindow::connectorListTabletModeItemSelectionChanged(){
+
+    setElementPlacementStatus(ElementPlacementStatus::connectorStartPoint);
+    hideTabletModeWidgets();
 }
 
 void MainWindow::objectListItemSelectionChanged(){
 
     setElementPlacementStatus(ElementPlacementStatus::object);
+    hideTabletModeWidgets();
+}
+
+void MainWindow::objectListTabletModeItemSelectionChanged(){
+
+    setElementPlacementStatus(ElementPlacementStatus::object);
+    hideTabletModeWidgets();
 }
 
 void MainWindow::updateElementPlacementGhostPosition(qreal x, qreal y){
@@ -286,14 +345,44 @@ void MainWindow::placeElement(Qt::MouseButton mouseButton){
         elementPlacementGhost = nullptr;
     }
 
-    objectList->blockSignals(true);
-    connectorList->blockSignals(true);
-    connectorList->clearSelection();
-    objectList->clearSelection();
-    objectList->blockSignals(false);
-    connectorList->blockSignals(false);
+    setListUnselected(objectList);
+    setListUnselected(objectListTabletMode);
+    setListUnselected(connectorList);
+    setListUnselected(connectorListTabletMode);
+    hideTabletModeWidgets();
+
     static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene()->update();
 }
+
+void MainWindow::updateTabletModeWidgetList(Qt::Key key){
+
+    QPoint viewPos = QCursor::pos() + QPoint(0, -20);
+
+    if(key == Qt::Key_Q){
+        objectListTabletMode->show();
+        objectListTabletMode->raise();
+        connectorListTabletMode->hide();
+        objectListTabletMode->move(viewPos);
+    }
+    else if(key == Qt::Key_W){
+        connectorListTabletMode->show();
+        connectorListTabletMode->raise();
+        objectListTabletMode->hide();
+        connectorListTabletMode->move(viewPos);
+    }
+
+    setListUnselected(objectList);
+    setListUnselected(objectListTabletMode);
+    setListUnselected(connectorList);
+    setListUnselected(connectorListTabletMode);
+}
+
+void MainWindow::hideTabletModeWidgets(){
+
+    objectListTabletMode->hide();
+    connectorListTabletMode->hide();
+}
+
 
 void MainWindow::connectSignals(){
 
@@ -317,10 +406,11 @@ void MainWindow::connectSignals(){
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabCloseRequestedSlot);
 
     connect(objectList, &QListWidget::itemSelectionChanged, this, &MainWindow::objectListItemSelectionChanged);
+    connect(objectListTabletMode, &QListWidget::itemSelectionChanged, this, &MainWindow::objectListTabletModeItemSelectionChanged);
     connect(connectorList, &QListWidget::itemSelectionChanged, this, &MainWindow::connectorListItemSelectionChanged);
+    connect(connectorListTabletMode, &QListWidget::itemSelectionChanged, this, &MainWindow::connectorListTabletModeItemSelectionChanged);
 
     connect(settings, &SettingsWindow::alternateModeCheckBoxToggled, this, &MainWindow::setDrawingTabletModeOn);
-
 }
 
 void MainWindow::createMenus(){
@@ -539,34 +629,6 @@ void MainWindow::createActions(){
 
 }
 
-void MainWindow::initTabWidget(){
-
-    //Create the tab widget which displays the projects:
-    tabWidget = new QTabWidget(this);
-    tabWidget->setTabBarAutoHide(false);
-    tabWidget->setTabsClosable(true);
-
-    //Menu button for the alternative mode when menubar is hidden
-    menuButton = new QPushButton(tabWidget);
-    menuButton->setIcon(QIcon(":/image/menu_icon.svg"));
-    menuButton->hide();
-
-    /*Horrible hack or, as some may say, a temporary workaround
-    Basically set fixed height for menubutton by creating a temporary tab
-    which is immediately deleted when the value is aquired */
-    QWidget* randWidget = new QWidget();
-
-    tabWidget->addTab(randWidget, tr("Temp"));
-
-    menuButton->setFixedSize(48, menuButton->height()-1);
-    menuButton->setFlat(true);
-
-    tabWidget->removeTab(0);
-    delete randWidget;
-
-    tabWidget->setContentsMargins(0,0,0,0);
-}
-
 void MainWindow::createDockWidgets(){
 
     //dockable windows:
@@ -616,12 +678,68 @@ void MainWindow::createDockWidgets(){
     propertyWindow->setWidget(selectionLabel);
 }
 
+void MainWindow::initTabWidget(){
+
+    //Create the tab widget which displays the projects:
+    tabWidget = new QTabWidget(this);
+    tabWidget->setTabBarAutoHide(false);
+    tabWidget->setTabsClosable(true);
+
+    //Menu button for the alternative mode when menubar is hidden
+    menuButton = new QPushButton(tabWidget);
+    menuButton->setIcon(QIcon(":/image/menu_icon.svg"));
+    menuButton->hide();
+
+    /*Horrible hack or, as some may say, a temporary workaround
+    Basically set fixed height for menubutton by creating a temporary tab
+    which is immediately deleted when the value is aquired */
+    QWidget* randWidget = new QWidget();
+
+    tabWidget->addTab(randWidget, tr("Temp"));
+
+    menuButton->setFixedSize(48, menuButton->height()-1);
+    menuButton->setFlat(true);
+
+    tabWidget->removeTab(0);
+    delete randWidget;
+
+    tabWidget->setContentsMargins(0,0,0,0);
+}
+
+void MainWindow::createTabletModeWidgets(){
+
+    objectListTabletMode = new QListWidget(this);
+    objectListTabletMode->setUniformItemSizes(true);
+    objectListTabletMode->setGridSize(QSize(50, 60));
+    objectListTabletMode->setWordWrap(true);
+    objectListTabletMode->setViewMode(QListView::IconMode);
+    objectListTabletMode->setFrameStyle(QFrame::Panel);
+    objectListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/comm_object.svg"), tr("Comment"), objectListTabletMode, ElementType::commentObject));
+    objectListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/class_object.svg"), tr("Class"), objectListTabletMode, ElementType::classObject));
+    objectListTabletMode->setWrapping(false);
+    objectListTabletMode->resize(objectListTabletMode->count() * objectListTabletMode->gridSize().width(), objectListTabletMode->gridSize().height());
+    objectListTabletMode->hide();
+
+    connectorListTabletMode = new QListWidget(this);
+    connectorListTabletMode->setUniformItemSizes(true);
+    connectorListTabletMode->setGridSize(QSize(50, 60));
+    connectorListTabletMode->setWordWrap(true);
+    connectorListTabletMode->setViewMode(QListView::IconMode);
+    connectorListTabletMode->setFrameStyle(QFrame::Panel);
+    connectorListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorListTabletMode, ElementType::association));
+    connectorListTabletMode->setWrapping(false);
+    connectorListTabletMode->resize(connectorListTabletMode->count() * connectorListTabletMode->gridSize().width(), connectorListTabletMode->gridSize().height());
+    connectorListTabletMode->hide();
+}
+
 void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
 
     coordinatesLabel->setText(QString("(%1,%2)").arg(x).arg(y));
 }
 
 void MainWindow::setDrawingTabletModeOn(bool enabled){
+
+    tabletModeEnabled = enabled;
 
     if (enabled){
         menuBar->hide();
@@ -646,6 +764,7 @@ void MainWindow::setDrawingTabletModeOn(bool enabled){
         historyWindow->show();
         menuButton->hide();
         tabWidget->setCornerWidget(0, Qt::TopLeftCorner);
+        hideTabletModeWidgets();
     }
 }
 
@@ -666,6 +785,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     createMenus();
     createToolBars();
     createDockWidgets();
+    createTabletModeWidgets();
 
     //Set created widgets to mainwindow:
     setMenuBar(menuBar);
@@ -679,6 +799,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
     elementPlacementStatus = ElementPlacementStatus::none;
     elementPlacementGhost = nullptr;
+
+    setDrawingTabletModeOn(false);
 
 }
 
