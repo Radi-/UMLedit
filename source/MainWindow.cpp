@@ -674,8 +674,6 @@ void MainWindow::initTabWidget(){
 
 void MainWindow::createTabletModeWidgets(){
 
-    int padding = 20;
-
     objectListTabletMode = new QListWidget(this);
     objectListTabletMode->setUniformItemSizes(true);
     objectListTabletMode->setGridSize(QSize(50, 60));
@@ -692,6 +690,7 @@ void MainWindow::createTabletModeWidgets(){
     connectorListTabletMode->setViewMode(QListView::IconMode);
     connectorListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorListTabletMode, ElementType::association));
     connectorListTabletMode->setWrapping(false);
+
 
     tabletModeTabWidget = new QTabWidget(this);
     tabletModeTabWidget->addTab(objectListTabletMode, tr("Objects"));
