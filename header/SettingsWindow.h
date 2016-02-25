@@ -40,6 +40,7 @@ private:
 
     void createGeneralPage();
     void createKeyboardPage();
+
     //Slot methods
     void rowChangedSlot(int row);
     void dialogButtonClicked(QAbstractButton* button);

@@ -20,8 +20,7 @@ SOURCES += \
     source/Object.cpp \
     source/GraphicsScene.cpp \
     source/Connection.cpp \
-    source/SettingsWindow.cpp \
-    source/AboutWindow.cpp
+    source/SettingsWindow.cpp
 
 HEADERS += \
     header/MainWindow.h \
@@ -33,8 +32,7 @@ HEADERS += \
     header/Object.h \
     header/GraphicsScene.h \
     header/Connection.h \
-    header/SettingsWindow.h \
-    header/AboutWindow.h
+    header/SettingsWindow.h
 
 RESOURCES += \
     resource/images.qrc

@@ -32,6 +32,7 @@ void Connector::setEndPoint(QPointF endPoint){
 }
 
 QtTreePropertyBrowser* Connector::getPropertyBrowser(){
+
     return propertyBrowser.data();
 }
 

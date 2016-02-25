@@ -59,8 +59,7 @@ private slots:
     void objectListTabletModeItemSelectionChanged();
     void updateElementPlacementGhostPosition(qreal x, qreal y);
     void placeElement(Qt::MouseButton mouseButton);
-    void updateTabletModeWidgetList(Qt::Key key);
-    void hideTabletModeWidgets();
+    void updateTabletModeTabWidget(Qt::Key key);
 
 private:
 
@@ -128,10 +127,13 @@ private:
     QPointer<QDockWidget> propertyWindow;
     QDockWidget* historyWindow;
 
-    QListWidget* objectList;
-    QListWidget* objectListTabletMode;
+    QListWidget* objectList;   
     QListWidget* connectorList;
+
+    QListWidget* objectListTabletMode;
     QListWidget* connectorListTabletMode;
+    QTabWidget* tabletModeTabWidget;
+
     QUndoView* historyView;
     QtTreePropertyBrowser* propertyBrowser;
 

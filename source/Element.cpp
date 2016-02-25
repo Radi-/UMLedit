@@ -48,6 +48,7 @@ Element::Element(){
 }
 
 Element::~Element(){
+
     if (!propertyBrowser.isNull()){
        delete propertyBrowser;
     }
