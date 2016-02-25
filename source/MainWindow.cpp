@@ -250,7 +250,7 @@ bool MainWindow::tabCloseRequestedSlot(int index){
 
 void MainWindow::setPropertyBrowser(){
 
-    if(tabWidget.isNull() && tabWidget->count() > 0 && !propertyWindow.isNull()){
+    if(!tabWidget.isNull() && tabWidget->count() > 0 && !propertyWindow.isNull()){
         QGraphicsView* view = static_cast<QGraphicsView*>(tabWidget->currentWidget());
         QGraphicsScene* scene = view->scene();
         if (scene->selectedItems().size() < 1){
