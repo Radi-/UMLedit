@@ -77,31 +77,6 @@ void MainWindow::newActionSlot(){
     tabWidget->addTab(view, tr("Project %1").arg(newProjectCount));
     tabWidget->setCurrentIndex(tabWidget->count()-1);
 
-    //test objects:
-    /*
-    CommentObject* commentObject = new CommentObject();
-    commentObject->setPos(QPointF(0, 0));
-    commentObject->setSize(QPoint(100, 50));
-    commentObject->setColour(QColor(200, 200, 0, 255));
-    scene->addItem(commentObject);
-
-    ClassObject* classObject = new ClassObject();
-    classObject->setPos(QPointF(100, 100));
-    classObject->setSize(QPoint(200, 150));
-    classObject->setColour(QColor(200, 200, 200, 255));
-    scene->addItem(classObject);
-
-    Connector* connector = new Connector();
-    connector->setPos(QPoint(100,100));
-    connector->setEndPoint(QPoint(200, 200));
-    connector->setType(Connector::Type::dependency);
-    connector->setColour(Qt::black);  
-    scene->addItem(connector);
-
-    commentObject->connectConnectorStartPoint(Connection(connector, QPointF(0, 0)));
-    classObject->connectConnectorEndPoint(Connection(connector, QPointF(0, 0)));
-    */
-
     if (!saveAction->isEnabled()) saveAction->setEnabled(true);
     if (!saveAsAction->isEnabled()) saveAsAction->setEnabled(true);
 }
@@ -275,7 +250,7 @@ bool MainWindow::tabCloseRequestedSlot(int index){
 
 void MainWindow::setPropertyBrowser(){
 
-    if(tabWidget->count() > 0 && !propertyWindow.isNull()){
+    if(tabWidget.isNull() && tabWidget->count() > 0 && !propertyWindow.isNull()){
         QGraphicsView* view = static_cast<QGraphicsView*>(tabWidget->currentWidget());
         QGraphicsScene* scene = view->scene();
         if (scene->selectedItems().size() < 1){
@@ -748,10 +723,10 @@ void MainWindow::setDrawingTabletModeOn(bool enabled){
         fileToolBar->hide();
         editToolBar->hide();
         viewToolBar->hide();
-        objectWindow->hide();
-        connectorWindow->hide();
-        propertyWindow->hide();
-        historyWindow->hide();
+        showConnectorDockAction->setChecked(false);
+        showObjectDockAction->setChecked(false);
+        showPropertyDockAction->setChecked(false);
+        showHistoryDockAction->setChecked(false);
         tabWidget->setCornerWidget(menuButton, Qt::TopLeftCorner);
         menuButton->show();
     }
@@ -760,10 +735,10 @@ void MainWindow::setDrawingTabletModeOn(bool enabled){
         fileToolBar->show();
         editToolBar->show();
         viewToolBar->show();
-        objectWindow->show();
-        connectorWindow->show();
-        propertyWindow->show();
-        historyWindow->show();
+        showConnectorDockAction->setChecked(false);
+        showObjectDockAction->setChecked(false);
+        showPropertyDockAction->setChecked(false);
+        showHistoryDockAction->setChecked(false);
         menuButton->hide();
         tabWidget->setCornerWidget(0, Qt::TopLeftCorner);
         hideTabletModeWidgets();

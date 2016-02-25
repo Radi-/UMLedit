@@ -120,7 +120,7 @@ private:
     QAction* aboutQtAction;
     QAction* aboutAction;
 
-    QTabWidget* tabWidget;
+    QPointer<QTabWidget> tabWidget;
     QPushButton* menuButton;
 
     QDockWidget* objectWindow;
