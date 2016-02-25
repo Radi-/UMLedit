@@ -52,6 +52,7 @@ ClassObject::~ClassObject(){
 }
 
 void ClassObject::stringPropertyUpdated(QtProperty* property, QString string){
+
     Q_UNUSED(property)
     Q_UNUSED(string)
     updateDrawingParameters();
@@ -122,5 +123,6 @@ void ClassObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
 }
 
 QtTreePropertyBrowser* ClassObject::getPropertyBrowser(){
+
     return propertyBrowser.data();
 }

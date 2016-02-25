@@ -13,7 +13,6 @@ CommentObject::CommentObject(){
     stringPropertyManager.data()->setValue(this->string, "comment");
     pointPropertyManager.data()->setValue(this->size, QPoint(100, 50));
     colorPropertyManager.data()->setValue(this->colour, QColor(255, 255, 0, 255));
-
 }
 
 CommentObject::~CommentObject(){
@@ -45,6 +44,7 @@ void CommentObject::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
 }
 
 QtTreePropertyBrowser* CommentObject::getPropertyBrowser(){
+
     return propertyBrowser.data();
 }
 

@@ -65,8 +65,7 @@ void SettingsWindow::dialogButtonClicked(QAbstractButton* button){
     }
 }
 
-SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
-{
+SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent){
 
     layout = new QVBoxLayout(this);
     dbuttonbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Reset,
@@ -103,9 +102,7 @@ SettingsWindow::SettingsWindow(QWidget* parent) : QDialog(parent)
     connect(listWidget, &QListWidget::currentRowChanged, this, &SettingsWindow::rowChangedSlot);
     connect(dbuttonbox, &QDialogButtonBox::clicked, this, &SettingsWindow::dialogButtonClicked);
     connect(alternateModeCheckBox, &QCheckBox::toggled, this, &SettingsWindow::alternateModeCheckBoxToggled);
-
 }
 
 SettingsWindow::~SettingsWindow(){
-
 }

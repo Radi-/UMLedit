@@ -40,7 +40,6 @@ protected slots:
     void updateDrawingParameters() override; //should be called every time when name, attributes, methods, nameFont or textFont change
 
 public slots:
-    //void pointPropertyUpdated(QtProperty* property, QPoint size);
     void stringPropertyUpdated(QtProperty* property, QString string);
 
 public:
