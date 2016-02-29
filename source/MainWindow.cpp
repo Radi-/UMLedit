@@ -725,10 +725,10 @@ void MainWindow::setDrawingTabletModeOn(bool enabled){
         fileToolBar->show();
         editToolBar->show();
         viewToolBar->show();
-        showConnectorDockAction->setChecked(false);
-        showObjectDockAction->setChecked(false);
-        showPropertyDockAction->setChecked(false);
-        showHistoryDockAction->setChecked(false);
+        showConnectorDockAction->setChecked(true);
+        showObjectDockAction->setChecked(true);
+        showPropertyDockAction->setChecked(true);
+        showHistoryDockAction->setChecked(true);
         menuButton->hide();
         tabWidget->setCornerWidget(0, Qt::TopLeftCorner);
         tabletModeTabWidget->hide();
