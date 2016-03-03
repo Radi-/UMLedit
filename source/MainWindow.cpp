@@ -125,21 +125,28 @@ void MainWindow::settingsActionSlot(){
 
 void MainWindow::showObjectDockActionSlot(bool checked){
 
-    objectWindow->setVisible(checked);
+    if (objectWindow->isVisible() != checked){
+        objectWindow->setVisible(checked);
+    }
 }
 
 void MainWindow::showConnectorDockActionSlot(bool checked){
 
-    connectorWindow->setVisible(checked);
+    if (connectorWindow->isVisible() != checked){
+        connectorWindow->setVisible(checked);
+    }
 }
 
 void MainWindow::showHistoryDockActionSlot(bool checked){
 
-    historyWindow->setVisible(checked);
+    if (showHistoryDockAction->isVisible() != checked){
+        historyWindow->setVisible(checked);
+    }
 }
 
 void MainWindow::showPropertyDockActionSlot(bool checked){
 
+    if (showPropertyDockAction->isVisible() != checked)
     propertyWindow->setVisible(checked);
 }
 
@@ -350,6 +357,34 @@ void MainWindow::updateTabletModeTabWidget(Qt::Key key){
     setListUnselected(connectorListTabletMode);
 }
 
+void MainWindow::objectWindowVisibilityChanged(bool visibility){
+
+    if (showObjectDockAction->isChecked() != visibility && tabifiedDockWidgets(objectWindow).isEmpty()){
+        showObjectDockAction->setChecked(visibility);
+    }
+}
+
+void MainWindow::connectorWindowVisibilityChanged(bool visibility){
+
+    if(showConnectorDockAction->isChecked() != visibility && tabifiedDockWidgets(connectorWindow).isEmpty()){
+        showConnectorDockAction->setChecked(visibility);
+    }
+}
+
+void MainWindow::propertyWindowVisibilityChanged(bool visibility){
+
+    if(showPropertyDockAction->isChecked() != visibility && tabifiedDockWidgets(historyWindow).isEmpty()){
+        showPropertyDockAction->setChecked(visibility);
+    }
+}
+
+void MainWindow::historyWindowVisibilityChanged(bool visibility){
+
+    if(showHistoryDockAction->isChecked() != visibility && tabifiedDockWidgets(propertyWindow).isEmpty()){
+        showHistoryDockAction->setChecked(visibility);
+    }
+}
+
 void MainWindow::connectSignals(){
 
     connect(newAction, &QAction::triggered, this, &MainWindow::newActionSlot);
@@ -370,6 +405,11 @@ void MainWindow::connectSignals(){
     connect(aboutQtAction, &QAction::triggered, this, &QApplication::aboutQt);
 
     connect(tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabCloseRequestedSlot);
+
+    connect(objectWindow, &QDockWidget::visibilityChanged, this, &MainWindow::objectWindowVisibilityChanged);
+    connect(connectorWindow, &QDockWidget::visibilityChanged, this, &MainWindow::connectorWindowVisibilityChanged);
+    connect(historyWindow, &QDockWidget::visibilityChanged, this, &MainWindow::historyWindowVisibilityChanged);
+    connect(propertyWindow, &QDockWidget::visibilityChanged, this, &MainWindow::propertyWindowVisibilityChanged);
 
     connect(objectList, &QListWidget::itemSelectionChanged, this, &MainWindow::objectListItemSelectionChanged);
     connect(objectListTabletMode, &QListWidget::itemSelectionChanged, this, &MainWindow::objectListTabletModeItemSelectionChanged);
@@ -562,19 +602,15 @@ void MainWindow::createActions(){
     showObjectDockAction = new QAction(tr("Show Objects Window"), this);
     showObjectDockAction->setStatusTip(tr("Show/hide objects window"));
     showObjectDockAction->setCheckable(true);
-    showObjectDockAction->setChecked(true);
     showConnectorDockAction = new QAction(tr("Show Connectors Window"), this);
     showConnectorDockAction->setStatusTip(tr("Show/hide connectors window"));
     showConnectorDockAction->setCheckable(true);
-    showConnectorDockAction->setChecked(true);
     showHistoryDockAction = new QAction(tr("Show History Window"), this);
     showHistoryDockAction->setStatusTip(tr("Show/hide undo history window"));
     showHistoryDockAction->setCheckable(true);
-    showHistoryDockAction->setChecked(true);
     showPropertyDockAction  = new QAction(tr("Show Properties Window"), this);
     showPropertyDockAction->setStatusTip(tr("Show/hide properties window"));
     showPropertyDockAction->setCheckable(true);
-    showPropertyDockAction->setChecked(true);
     showGridAction = new QAction(tr("Show Grid"), this);
     showGridAction->setStatusTip(tr("Show/hide grid in the project"));
     showGridAction->setCheckable(true);
@@ -737,7 +773,8 @@ void MainWindow::setDrawingTabletModeOn(bool enabled){
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
 
-    this->setWindowTitle("UMLedit");
+    setWindowTitle("UMLedit");
+    setDockOptions(DockOption::AllowNestedDocks | DockOption::AllowTabbedDocks);
 
     settings = new SettingsWindow(this);
 

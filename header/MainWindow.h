@@ -50,6 +50,7 @@ private slots:
     void showPropertyDockActionSlot(bool checked);
 
     bool tabCloseRequestedSlot(int index);
+    void tabBarDoubleClicked(int index);
 
     void setPropertyBrowser();
 
@@ -60,6 +61,11 @@ private slots:
     void updateElementPlacementGhostPosition(qreal x, qreal y);
     void placeElement(Qt::MouseButton mouseButton);
     void updateTabletModeTabWidget(Qt::Key key);
+
+    void objectWindowVisibilityChanged(bool visibility);
+    void connectorWindowVisibilityChanged(bool visibility);
+    void propertyWindowVisibilityChanged(bool visibility);
+    void historyWindowVisibilityChanged(bool visibility);
 
 private:
 
