@@ -50,7 +50,6 @@ private slots:
     void showPropertyDockActionSlot(bool checked);
 
     bool tabCloseRequestedSlot(int index);
-    void tabBarDoubleClicked(int index);
 
     void setPropertyBrowser();
 
