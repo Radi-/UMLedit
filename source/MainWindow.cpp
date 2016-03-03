@@ -150,78 +150,6 @@ void MainWindow::showPropertyDockActionSlot(bool checked){
     propertyWindow->setVisible(checked);
 }
 
-void MainWindow::setListUnselected(QListWidget* list){
-
-    list->blockSignals(true);
-    list->clearSelection();
-    list->blockSignals(false);
-}
-
-void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
-
-    if(tabWidget->count() > 0){
-
-        const int ghostAlpha = 50;
-
-        this->elementPlacementStatus = elementPlacementStatus;
-
-        QGraphicsScene* scene = static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene();
-
-        if(elementPlacementGhost != nullptr){
-            scene->removeItem(elementPlacementGhost);
-            delete elementPlacementGhost;
-        }
-
-        if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
-
-            setListUnselected(objectList);
-
-            if(tabletModeEnabled){
-                if(connectorListTabletMode->currentItem()->type() == ElementType::association){
-                    elementPlacementGhost = new Connector();
-                    static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
-                    setListUnselected(connectorList);
-                }
-            }
-            else{
-                if(connectorList->currentItem()->type() == ElementType::association){
-                    elementPlacementGhost = new Connector();
-                    static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
-                }
-            }
-
-            elementPlacementGhost->setAlpha(ghostAlpha);
-            scene->addItem(elementPlacementGhost);
-        }
-
-        if(elementPlacementStatus == ElementPlacementStatus::object){
-
-            setListUnselected(connectorList);
-
-            if(tabletModeEnabled){
-                if(objectListTabletMode->currentItem()->type() == ElementType::classObject){
-                    elementPlacementGhost = new ClassObject();
-                }
-                else if(objectListTabletMode->currentItem()->type() == ElementType::commentObject){
-                    elementPlacementGhost = new CommentObject();
-                }
-                setListUnselected(objectList);
-            }
-            else{
-                if(objectList->currentItem()->type() == ElementType::classObject){
-                    elementPlacementGhost = new ClassObject();
-                }
-                else if(objectList->currentItem()->type() == ElementType::commentObject){
-                    elementPlacementGhost = new CommentObject();
-                }
-            }
-
-            elementPlacementGhost->setAlpha(ghostAlpha);
-            scene->addItem(elementPlacementGhost);
-        }
-    }
-}
-
 bool MainWindow::tabCloseRequestedSlot(int index){
 
     GraphicsView* view = (GraphicsView*)tabWidget->widget(index);
@@ -727,12 +655,83 @@ void MainWindow::createTabletModeWidgets(){
     connectorListTabletMode->addItem(new QListWidgetItem(QIcon(":/image/assoc_arrow.svg"), tr("Arrow"), connectorListTabletMode, ElementType::association));
     connectorListTabletMode->setWrapping(false);
 
-
     tabletModeTabWidget = new QTabWidget(this);
     tabletModeTabWidget->addTab(objectListTabletMode, tr("Objects"));
     tabletModeTabWidget->addTab(connectorListTabletMode, tr("Connectors"));
     tabletModeTabWidget->resize(200, 100);
     tabletModeTabWidget->hide();
+}
+
+void MainWindow::setListUnselected(QListWidget* list){
+
+    list->blockSignals(true);
+    list->clearSelection();
+    list->blockSignals(false);
+}
+
+void MainWindow::setElementPlacementStatus(ElementPlacementStatus elementPlacementStatus){
+
+    if(tabWidget->count() > 0){
+
+        const int ghostAlpha = 50;
+
+        this->elementPlacementStatus = elementPlacementStatus;
+
+        QGraphicsScene* scene = static_cast<QGraphicsView*>(tabWidget->currentWidget())->scene();
+
+        if(elementPlacementGhost != nullptr){
+            scene->removeItem(elementPlacementGhost);
+            delete elementPlacementGhost;
+        }
+
+        if(elementPlacementStatus == ElementPlacementStatus::connectorStartPoint){
+
+            setListUnselected(objectList);
+
+            if(tabletModeEnabled){
+                if(connectorListTabletMode->currentItem()->type() == ElementType::association){
+                    elementPlacementGhost = new Connector();
+                    static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
+                    setListUnselected(connectorList);
+                }
+            }
+            else{
+                if(connectorList->currentItem()->type() == ElementType::association){
+                    elementPlacementGhost = new Connector();
+                    static_cast<Connector*>(elementPlacementGhost)->setType(Connector::Type::association);
+                }
+            }
+
+            elementPlacementGhost->setAlpha(ghostAlpha);
+            scene->addItem(elementPlacementGhost);
+        }
+
+        if(elementPlacementStatus == ElementPlacementStatus::object){
+
+            setListUnselected(connectorList);
+
+            if(tabletModeEnabled){
+                if(objectListTabletMode->currentItem()->type() == ElementType::classObject){
+                    elementPlacementGhost = new ClassObject();
+                }
+                else if(objectListTabletMode->currentItem()->type() == ElementType::commentObject){
+                    elementPlacementGhost = new CommentObject();
+                }
+                setListUnselected(objectList);
+            }
+            else{
+                if(objectList->currentItem()->type() == ElementType::classObject){
+                    elementPlacementGhost = new ClassObject();
+                }
+                else if(objectList->currentItem()->type() == ElementType::commentObject){
+                    elementPlacementGhost = new CommentObject();
+                }
+            }
+
+            elementPlacementGhost->setAlpha(ghostAlpha);
+            scene->addItem(elementPlacementGhost);
+        }
+    }
 }
 
 void MainWindow::updateStatusBarCoordinates(qreal x, qreal y){
@@ -805,7 +804,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent){
     elementPlacementGhost = nullptr;
 
     setDrawingTabletModeOn(false);
-
 }
 
 MainWindow::~MainWindow(){
